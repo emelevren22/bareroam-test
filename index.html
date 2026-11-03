@@ -233,6 +233,12 @@ footer strong { color:inherit; }
 @media(max-width:650px){.bareroam-hero{padding:20px 0 0 18px;} .bareroam-hero-photo{height:225px;}}
 
 
+/* V6: category explorer */
+.category-explainer{max-width:1248px;margin:0 auto 22px;padding:20px 24px;border:1px solid var(--line);border-radius:18px;background:#fffefa;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.category-explainer h2{font-family:var(--site-font-body);font-weight:750;font-size:21px;margin:7px 0}
+.category-explainer p{font-size:13px;color:var(--muted);line-height:1.55;margin:0}
+.bareroam-category-nav a[aria-current="true"]{border:2px solid #174f46;background:#e4eee6}
+@media(max-width:650px){.category-explainer{margin:0 12px 18px;flex-direction:column;align-items:stretch}}
 /* Bareroam category refresh: consistent forest-green line icons, concise labels. */
 .bareroam-category-nav a {min-height:104px; gap:10px; align-items:center; justify-content:center;}
 .bareroam-category-nav .cat-icon {display:flex; justify-content:center; align-items:center; height:36px; color:#174f46;}
@@ -262,7 +268,7 @@ footer strong { color:inherit; }
     <div class="bareroam-hero-photo" role="img" aria-label="Calm turquoise bay and coastal landscape"></div>
   </section>
   <div class="bareroam-category-nav" aria-label="Travel categories">
-    <a href="#planner"><span class="cat-icon"><svg class="category-svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18V7"/><path d="M3 13h18v5H3z"/><path d="M6 13V9a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M14 10h5a2 2 0 0 1 2 2v1"/><path d="M3 18v3m18-3v3"/></svg></span><strong>Stays</strong></a>
+    <a href="#categoryExplore" data-travel-category="health" data-travel-category="pets" data-travel-category="family" data-travel-category="shopping" data-travel-category="dining" data-travel-category="activities" data-travel-category="flights" data-travel-category="stays"><span class="cat-icon"><svg class="category-svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18V7"/><path d="M3 13h18v5H3z"/><path d="M6 13V9a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M14 10h5a2 2 0 0 1 2 2v1"/><path d="M3 18v3m18-3v3"/></svg></span><strong>Stays</strong></a>
     <a href="#planner"><span class="cat-icon"><svg class="category-svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 3.5 10 11l-7-2-2 2 7.5 4-2 5 2 2 4-6.5 7.5 7.5 2-2-6-9 7.5-7.5a3 3 0 0 0-6-1z"/></svg></span><strong>Flights</strong></a>
     <a href="#realPlaces"><span class="cat-icon"><svg class="category-svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10a2 2 0 0 1 0 4m18-4a2 2 0 0 0 0 4"/><path d="M12 8v2m0 4v2" stroke-dasharray="1 2"/></svg></span><strong>Things to Do</strong></a>
     <a href="#realPlaces"><span class="cat-icon"><svg class="category-svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3v7a3 3 0 0 0 6 0V3M7 3v18M17 3c-3 3-3 8 0 10h3V3zM20 13v8"/></svg></span><strong>Food & Dining</strong></a>
@@ -271,6 +277,10 @@ footer strong { color:inherit; }
     <a href="#planner"><span class="cat-icon"><svg class="category-svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="8" r="1"/><circle cx="11" cy="5" r="1"/><circle cx="16" cy="6" r="1"/><circle cx="20" cy="10" r="1"/><path d="M8 14c1.5-3 6.5-3 8 0l2 3a3 3 0 0 1-4 4l-2-1-2 1a3 3 0 0 1-4-4z"/></svg></span><strong>Pet Travel</strong></a>
     <a href="#realPlaces"><span class="cat-icon"><svg class="category-svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M10 7h4m-2-2v4M8 14h8M8 18h8"/></svg></span><strong>Health & Care</strong></a>
   </div>
+  <section class="category-explainer" id="categoryExplore" aria-live="polite">
+    <div><span class="eyebrow">BARE­ROAM V6 / EXPLORE BY INTEREST</span><h2 id="categoryHeading">Choose how you travel</h2><p id="categoryDescription">Select any category above to discover relevant real-world places.</p></div>
+    <button class="primary" id="categoryExploreButton" type="button">Explore this category ↗</button>
+  </section>
   <main>
     <div class="section-head" id="planner"><div><div class="eyebrow">01 / Make it yours</div><h2>Start with your kind of trip</h2></div><p>Adjust the details and generate a sample plan. Live travel prices and external review feeds are not connected in this prototype.</p></div>
     <div class="workspace">
@@ -366,7 +376,7 @@ Good value for the location. Small room, very clean, and quiet after midnight.</
         <div class="field"><label for="explorerCountry">Country</label><select id="explorerCountry"></select></div>
         <div class="field"><label for="explorerDestination">City / destination</label><select id="explorerDestination"></select></div>
         <div class="field"><label for="explorerArea">Area / neighbourhood</label><select id="explorerArea"></select></div>
-        <div class="field"><label for="placeCategory">What to explore</label><select id="placeCategory"><option value="cafes">☕ Cafés</option><option value="museums">🏛️ Museums</option><option value="parks">🌳 Parks & gardens</option><option value="shopping">🛍️ Shops</option></select></div>
+        <div class="field"><label for="placeCategory">What to explore</label><select id="placeCategory"><option value="cafes">☕ Cafés</option><option value="museums">🏛️ Museums</option><option value="parks">🌳 Parks & gardens</option><option value="shopping">🛍️ Shops</option><option value="stays">🛏️ Hotels & accommodation</option><option value="airports">✈️ Airports & airfields</option><option value="activities">🎟️ Attractions & things to do</option><option value="dining">🍽️ Restaurants & dining</option><option value="family">👨‍👩‍👧‍👦 Playgrounds & family outings</option><option value="pets">🐾 Dog parks & pet services</option><option value="health">🏥 Hospitals & clinics</option><option value="pharmacies">💊 Pharmacies</option></select></div>
         <div class="field wide"><label for="placeTextFilter">Filter returned places by name</label><input id="placeTextFilter" placeholder="e.g. coffee, art, boutique" autocomplete="off"></div>
       </div>
       <div class="explorer-actions"><button class="primary" id="findPlaces">Find real places ↗</button><button class="secondary" id="resetExplorer">Reset filters</button></div>
@@ -2061,7 +2071,15 @@ const placeCategories = {
   cafes: {label:'Café', filter:'["amenity"="cafe"]'},
   museums: {label:'Museum', filter:'["tourism"="museum"]'},
   parks: {label:'Park or garden', filter:'["leisure"="park"]'},
-  shopping: {label:'Shop', filter:'["shop"]'}
+  shopping: {label:'Shop', filter:'["shop"]'},
+  stays: {label:'Hotel or accommodation', filter:'["tourism"~"^(hotel|hostel|guest_house|motel|apartment|camp_site)$"]'},
+  airports: {label:'Airport or airfield', filter:'["aeroway"="aerodrome"]'},
+  activities: {label:'Attraction or activity', filter:'["tourism"~"^(attraction|museum|gallery|viewpoint|theme_park|zoo)$"]'},
+  dining: {label:'Restaurant or dining', filter:'["amenity"~"^(restaurant|fast_food|food_court)$"]'},
+  family: {label:'Playground or family outing', filter:'["leisure"~"^(playground|park|water_park)$"]'},
+  pets: {label:'Dog park or pet service', filter:'["leisure"="dog_park"]'},
+  health: {label:'Hospital or clinic', filter:'["amenity"~"^(hospital|clinic|doctors)$"]'},
+  pharmacies: {label:'Pharmacy', filter:'["amenity"="pharmacy"]'}
 };
 function setPlacesStatus(message, isError=false) {
   const status=document.getElementById('placesStatus');
@@ -2312,7 +2330,8 @@ async function bareroamDirectOSM(city,category) {
   const filter=placeCategories[category]?.filter;
   if(!centre||!filter) throw new Error('Unsupported destination or category');
   const lat=Number(centre.lat), lon=Number(centre.lon);
-  const query=`[out:json][timeout:18];(node(around:3500,${lat},${lon})${filter};way(around:3500,${lat},${lon})${filter};relation(around:3500,${lat},${lon})${filter};);out center 180;`;
+  const radius=category==='airports'?25000:3500;
+  const query=`[out:json][timeout:18];(node(around:${radius},${lat},${lon})${filter};way(around:${radius},${lat},${lon})${filter};relation(around:${radius},${lat},${lon})${filter};);out center 180;`;
   const endpoints=[
     'https://overpass.kumi.systems/api/interpreter',
     'https://overpass.nchc.org.tw/api/interpreter',
@@ -2336,7 +2355,7 @@ async function findRealPlaces() {
   const area=document.getElementById('explorerArea').value;
   const apiArea=area?workerArea(city,area):'';
   const fallbackLink=document.getElementById('placesFallbackLink');
-  const term=({cafes:'cafes',museums:'museums',parks:'parks and gardens',shopping:'shops'})[category]||'places';
+  const term=({cafes:'cafes',museums:'museums',parks:'parks and gardens',shopping:'shops',stays:'hotels and accommodation',airports:'airports',activities:'attractions',dining:'restaurants',family:'playgrounds and parks',pets:'dog parks',health:'hospitals and clinics',pharmacies:'pharmacies'})[category]||'places';
   fallbackLink.href=`https://www.openstreetmap.org/search?query=${encodeURIComponent(`${term} in ${area?`${area}, `:''}${city}`)}`;
   fallbackLink.textContent=`Find ${term} in ${area?`${area}, `:''}${city} on OpenStreetMap ↗`;
   fallbackLink.classList.add('hidden');
@@ -2360,6 +2379,7 @@ async function findRealPlaces() {
     let elements=null;
     // First try the existing project API. Give it a short, independent timeout.
     try {
+      if(!['cafes','museums','parks','shopping'].includes(category)) throw new Error('Direct OpenStreetMap category');
       const params=new URLSearchParams({city,category});
       if(apiArea) params.set('area',apiArea);
       elements=await bareroamFetchWithTimeout(
@@ -2637,6 +2657,30 @@ document.querySelectorAll('#compareNav, #compareCategory').forEach(link => link.
   const compare = document.querySelector('[data-tab="compare"]');
   if(compare) compare.click();
 }));
+
+// V6: Category tiles open targeted real-place discovery; booking/flight pricing is not claimed.
+const v6Categories={
+  stays:{title:'Stays',description:'Explore mapped hotels and accommodation. Pet-friendly policies, availability and prices must be confirmed directly.',place:'stays'},
+  flights:{title:'Flights',description:'Find mapped airports and airfields. Live flight schedules, fares and ticket booking are not connected.',place:'airports'},
+  activities:{title:'Things to Do',description:'Discover attractions, galleries, museums, viewpoints and activities recorded on OpenStreetMap.',place:'activities'},
+  dining:{title:'Food & Dining',description:'Find mapped restaurants and dining spots. Check menus, dietary requirements and opening hours directly.',place:'dining'},
+  shopping:{title:'Shopping',description:'Discover shops and shopping areas, then save places to your trip.',place:'shopping'},
+  family:{title:'Family Travel',description:'Explore playgrounds and parks. Accessibility, stroller access and age suitability are not verified.',place:'family'},
+  pets:{title:'Pet Travel',description:'Find mapped dog parks and pet-related outdoor places. Animal acceptance and local rules must be checked.',place:'pets'},
+  health:{title:'Health & Care',description:'Explore hospitals and clinics. You can switch the category filter to pharmacies. Hours and emergency availability are not verified.',place:'health'}
+};
+function activateV6Category(key){
+  const item=v6Categories[key];if(!item)return;
+  document.querySelectorAll('[data-travel-category]').forEach(a=>a.setAttribute('aria-current',a.dataset.travelCategory===key?'true':'false'));
+  document.getElementById('categoryHeading').textContent=item.title;
+  document.getElementById('categoryDescription').textContent=item.description;
+  const select=document.getElementById('placeCategory');select.value=item.place;
+  if(typeof resetPlaceResults==='function')resetPlaceResults();
+  document.getElementById('categoryExploreButton').textContent=`Find ${item.title} ↗`;
+  document.getElementById('categoryExploreButton').onclick=()=>{document.getElementById('realPlaces').scrollIntoView({behavior:'smooth'});document.getElementById('findPlaces').click();};
+}
+document.querySelectorAll('[data-travel-category]').forEach(a=>a.addEventListener('click',()=>activateV6Category(a.dataset.travelCategory)));
+activateV6Category('activities');
 </script>
 </body>
 </html>
