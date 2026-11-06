@@ -244,6 +244,14 @@ footer strong { color:inherit; }
 .bareroam-category-nav .cat-icon {display:flex; justify-content:center; align-items:center; height:36px; color:#174f46;}
 .bareroam-category-nav .category-svg {display:block; width:32px; height:32px;}
 .bareroam-category-nav a strong {font-size:13px; line-height:1.3;}
+
+/* V7: self-contained category workspace */
+.v7-overlay{position:fixed;inset:0;z-index:1000;background:rgba(12,31,24,.68);display:none;align-items:center;justify-content:center;padding:18px}
+.v7-overlay.open{display:flex}.v7-dialog{background:#fffefa;color:#20392d;border-radius:22px;width:min(980px,100%);max-height:94vh;overflow:auto;box-shadow:0 25px 80px #0005;padding:25px}
+.v7-head{display:flex;justify-content:space-between;align-items:start;gap:16px}.v7-head h2{margin:5px 0 7px}.v7-close{border:1px solid #d3dfd4;border-radius:10px;background:white;padding:9px 13px;font-size:20px}
+.v7-form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:18px 0}.v7-form .field{margin:0}.v7-form label{color:#294b3c}.v7-form input,.v7-form select{background:white;color:#20392d}
+.v7-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.v7-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0}.v7-result{border:1px solid #dce3da;border-radius:14px;padding:14px;min-width:0}.v7-result h3{font-size:15px;overflow-wrap:anywhere;margin:0 0 8px}.v7-result p{font-size:12px;color:#52685b;line-height:1.5}.v7-result a{font-size:12px;color:#174f46}.v7-note{font-size:12px;color:#52685b;line-height:1.6;margin:10px 0}.v7-status{padding:12px;border-radius:11px;background:#edf4ed;font-size:12px;line-height:1.6;margin-top:12px}.v7-status.error{background:#fff1df;color:#704515}.bareroam-category-nav a:focus-visible{outline:3px solid #174f46}
+@media(max-width:720px){.v7-form{grid-template-columns:1fr}.v7-results{grid-template-columns:1fr}.v7-dialog{padding:17px;max-height:96vh}}
 </style>
 </head>
 <body>
@@ -402,6 +410,15 @@ Good value for the location. Small room, very clean, and quiet after midnight.</
   </main>
   <footer><div><strong>tripwise AI</strong> · A concept prototype for thoughtful travel planning.</div><div>Not a booking service. Demonstration itinerary and scores are not live offers or verified recommendations.</div></footer>
 </div>
+
+<div id="v7Overlay" class="v7-overlay" aria-hidden="true"><section class="v7-dialog" role="dialog" aria-modal="true" aria-labelledby="v7Title">
+<div class="v7-head"><div><div class="eyebrow">BAREROAM · EXPLORE</div><h2 id="v7Title">Explore</h2><p id="v7Intro" class="v7-note"></p></div><button id="v7Close" class="v7-close" aria-label="Close category">×</button></div>
+<div class="v7-form"><div class="field"><label for="v7City">Destination</label><select id="v7City"></select></div><div class="field"><label for="v7Type">What are you looking for?</label><select id="v7Type"></select></div><div class="field"><label for="v7Name">Filter results by name</label><input id="v7Name" placeholder="e.g. museum, boutique" autocomplete="off"></div></div>
+<div id="v7Flight" class="hidden"><div class="v7-form"><div class="field"><label for="v7Origin">Departure city / airport</label><input id="v7Origin" placeholder="e.g. Istanbul"></div><div class="field"><label for="v7Depart">Departure date</label><input type="date" id="v7Depart"></div><div class="field"><label for="v7Return">Return date (optional)</label><input type="date" id="v7Return"></div></div><p class="v7-note">Flight search opens an independent flight-search provider. Bareroam does not receive live fares or availability.</p></div>
+<div class="v7-actions"><button class="primary" id="v7Search">Find places ↗</button><button class="secondary" id="v7More" hidden>Show more</button><a class="small-link" id="v7External" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Open map search ↗</a></div>
+<div id="v7Status" class="v7-status" role="status" aria-live="polite">Choose a destination and search.</div><div id="v7Results" class="v7-results"></div>
+<p class="v7-note">Map records © OpenStreetMap contributors. Data coverage varies. Hours, accessibility, pet policies and availability are not independently verified. Confirm with the venue before visiting.</p>
+</section></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 const destinationData = {
@@ -2681,6 +2698,74 @@ function activateV6Category(key){
 }
 document.querySelectorAll('[data-travel-category]').forEach(a=>a.addEventListener('click',()=>activateV6Category(a.dataset.travelCategory)));
 activateV6Category('activities');
+</script>
+
+<script>
+/* Bareroam V7 category workspace. Existing planner, shortlist and explorer are preserved. */
+(()=>{
+const groups={
+ stays:{title:'Stays',intro:'Hotels, guesthouses and apartments. Booking availability and pet policies require confirmation.',types:[['hotels','Hotels','["tourism"="hotel"]'],['apartments','Apartments','["tourism"="apartment"]'],['guesthouses','Guesthouses & hostels','["tourism"~"^(guest_house|hostel|motel)$"]'],['all','All accommodation','["tourism"~"^(hotel|hostel|guest_house|motel|apartment)$"]']]},
+ flights:{title:'Flights',intro:'Compare flight options using an external search service. Live fares are not integrated.',types:[['flights','Flight search','']]},
+ activities:{title:'Things to Do',intro:'Explore landmarks, museums, galleries and attractions.',types:[['attractions','Attractions & landmarks','["tourism"~"^(attraction|viewpoint|zoo|theme_park)$"]'],['museums','Museums & galleries','["tourism"~"^(museum|gallery)$"]'],['historic','Historic sites','["historic"]'],['parks','Parks & gardens','["leisure"~"^(park|garden)$"]']]},
+ dining:{title:'Food & Dining',intro:'Find places to eat and drink. Menus, prices and hours must be checked.',types:[['restaurants','Restaurants','["amenity"="restaurant"]'],['cafes','Cafés & coffee','["amenity"="cafe"]'],['fastfood','Casual & quick bites','["amenity"~"^(fast_food|food_court)$"]'],['bakeries','Bakeries','["shop"="bakery"]']]},
+ shopping:{title:'Shopping',intro:'Discover shopping centres, fashion, boutiques and beauty stores. Supermarkets are excluded from these selections.',types:[['malls','Shopping centres & malls','["shop"="mall"]'],['fashion','Fashion & boutiques','["shop"~"^(clothes|boutique|fashion|shoes|department_store)$"]'],['beauty','Beauty & cosmetics','["shop"~"^(cosmetics|perfumery|beauty)$"]'],['gifts','Gifts, jewellery & design','["shop"~"^(gift|jewelry|jewellery|art|craft)$"]'],['outlets','Outlet-labelled shops','["name"~"outlet",i]["shop"]']]},
+ family:{title:'Family Travel',intro:'Family outing ideas; child suitability, changing facilities and stroller access are not verified.',types:[['playgrounds','Playgrounds','["leisure"="playground"]'],['parks','Parks & gardens','["leisure"~"^(park|garden)$"]'],['familyfun','Zoos & theme parks','["tourism"~"^(zoo|theme_park)$"]'],['baby','Baby & children shops','["shop"~"^(baby_goods|toys)$"]']]},
+ pets:{title:'Pet Travel',intro:'Pet services and outdoor spaces. A mapped location does not guarantee pets are admitted.',types:[['petshops','Pet supply stores','["shop"="pet"]'],['vets','Veterinarians','["amenity"="veterinary"]'],['dogparks','Dog parks','["leisure"="dog_park"]'],['petstays','Pet-tagged accommodation (unverified)','["tourism"~"^(hotel|guest_house|apartment)$"]["dog"~"^(yes|leashed)$"]']]},
+ health:{title:'Health & Care',intro:'Mapped medical services. Never assume a pharmacy is open or an emergency department is available without direct confirmation.',types:[['pharmacies','Pharmacies','["amenity"="pharmacy"]'],['hospitals','Hospitals','["amenity"="hospital"]'],['clinics','Clinics & doctors','["amenity"~"^(clinic|doctors)$"]'],['dentists','Dentists','["amenity"="dentist"]']]}
+};
+const $=id=>document.getElementById(id),overlay=$('v7Overlay'),city=$('v7City'),type=$('v7Type');
+let active='stays',all=[],limit=24,requestNumber=0,restoreFocus=null;
+function init(){
+ const cities=Object.entries(countryDestinations).flatMap(([country,names])=>names.filter(n=>cityCentres[n]).map(n=>({id:n,label:`${n.replace(/([a-z])([A-Z])/g,'$1 $2')}, ${country}`}))).sort((a,b)=>a.label.localeCompare(b.label,'en'));
+ for(const c of cities){const o=document.createElement('option');o.value=c.id;o.textContent=c.label;city.append(o)}
+ const mainCity=$('explorerDestination')?.value||'Paris';city.value=cityCentres[mainCity]?mainCity:'Paris';
+}
+function open(key){if(!groups[key])return;restoreFocus=document.activeElement;active=key;requestNumber++;const g=groups[key];$('v7Title').textContent=g.title;$('v7Intro').textContent=g.intro;
+ type.replaceChildren();for(const [value,label] of g.types){const o=document.createElement('option');o.value=value;o.textContent=label;type.append(o)}
+ $('v7Flight').classList.toggle('hidden',key!=='flights');$('v7Name').parentElement.classList.toggle('hidden',key==='flights');$('v7Search').textContent=key==='flights'?'Search flights externally ↗':'Find '+g.title.toLowerCase()+' ↗';
+ $('v7Results').replaceChildren();$('v7More').hidden=true;$('v7Status').textContent=key==='flights'?'Enter your flight details to open an external flight search.':'Select a place type and press Find.';
+ const selected=$('explorerDestination')?.value;if(cityCentres[selected])city.value=selected;
+ overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';$('v7Close').focus();updateLink();
+}
+function close(){requestNumber++;overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');document.body.style.overflow='';if(restoreFocus?.focus)restoreFocus.focus()}
+function updateLink(){const label=groups[active].types.find(t=>t[0]===type.value)?.[1]||groups[active].title;const term=label+' in '+city.options[city.selectedIndex]?.textContent;const a=$('v7External');a.href='https://www.openstreetmap.org/search?query='+encodeURIComponent(term);a.textContent='Search '+label.toLowerCase()+' on OpenStreetMap ↗';a.classList.toggle('hidden',active==='flights')}
+function status(message,error=false){$('v7Status').textContent=message;$('v7Status').classList.toggle('error',error)}
+function render(){const root=$('v7Results');root.replaceChildren();const term=$('v7Name').value.trim().toLocaleLowerCase();const filtered=all.filter(p=>!term||`${p.name} ${p.detail}`.toLocaleLowerCase().includes(term));
+ for(const p of filtered.slice(0,limit)){
+ const card=document.createElement('article');card.className='v7-result';const h=document.createElement('h3');h.textContent=p.name;const detail=document.createElement('p');detail.textContent=p.detail;
+ const link=document.createElement('a');link.href=p.mapUrl;link.target='_blank';link.rel='noopener';link.textContent='View on OpenStreetMap ↗';
+ const save=document.createElement('button');save.className='save-place';save.type='button';const saved={...p,city:city.value,category:active,area:'',categoryLabel:groups[active].title};
+ const refresh=()=>{const yes=isPlaceSaved(saved);save.textContent=yes?'♥ Saved — remove':'♡ Save to my trip';save.classList.toggle('saved',yes)};save.addEventListener('click',()=>{toggleSavedPlace(saved);refresh()});refresh();card.append(h,detail,link,save);root.append(card)
+ }
+ $('v7More').hidden=filtered.length<=limit;status(`${filtered.length} mapped place${filtered.length===1?'':'s'} matched · showing ${Math.min(filtered.length,limit)}. Map coverage and details may be incomplete.`)
+}
+async function search(){if(active==='flights'){
+ const origin=$('v7Origin').value.trim(),destination=city.options[city.selectedIndex]?.textContent||city.value;
+ if(!origin){status('Enter a departure city or airport first.',true);return}
+ const query=`Flights from ${origin} to ${destination} ${$('v7Depart').value||''} ${$('v7Return').value?'return '+$('v7Return').value:''}`;
+ window.open('https://www.google.com/travel/flights?q='+encodeURIComponent(query),'_blank','noopener');status('Opened external flight search. Prices and availability are provided by the external site.');return;
+ }
+ const centre=cityCentres[city.value],filter=groups[active].types.find(t=>t[0]===type.value)?.[2];if(!centre||!filter){status('Select a valid destination and place type.',true);return}
+ const request=++requestNumber;const button=$('v7Search');button.disabled=true;button.textContent='Searching…';all=[];$('v7Results').replaceChildren();$('v7More').hidden=true;status('Searching OpenStreetMap records…');
+ const radius=4500,query=`[out:json][timeout:22];(node(around:${radius},${centre.lat},${centre.lon})${filter};way(around:${radius},${centre.lat},${centre.lon})${filter};relation(around:${radius},${centre.lat},${centre.lon})${filter};);out center 250;`;
+ const endpoints=['https://overpass.kumi.systems/api/interpreter','https://overpass.nchc.org.tw/api/interpreter','https://overpass-api.de/api/interpreter'];let err;
+ try{let elements=null;for(const endpoint of endpoints){if(request!==requestNumber)return;try{elements=await bareroamFetchWithTimeout(endpoint+'?data='+encodeURIComponent(query),12000);break}catch(e){err=e}}
+ if(request!==requestNumber)return;if(!elements)throw err||Error('Map search unavailable');const seen=new Set();const counts=new Map();
+ all=elements.map(el=>{const tags=el.tags||{},name=tags.name||tags['name:en']||'',lat=el.lat??el.center?.lat,lon=el.lon??el.center?.lon;
+ if(!name||!Number.isFinite(lat)||!Number.isFinite(lon))return null;
+ const id=`${name.toLocaleLowerCase()}|${lat.toFixed(4)}|${lon.toFixed(4)}`;if(seen.has(id))return null;seen.add(id);
+ const chain=(tags.brand||tags.operator||name).toLocaleLowerCase().trim();const count=counts.get(chain)||0;counts.set(chain,count+1);
+ const detail=[tags['addr:street'],tags.cuisine,tags.shop,tags.tourism,tags.amenity,tags.opening_hours?'Hours (unverified): '+tags.opening_hours:''].filter(Boolean).join(' · ')||'Mapped place · details not independently verified';
+ return {name,detail,lat,lon,mapUrl:`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=17/${lat}/${lon}`,chain,count}
+ }).filter(Boolean).sort((a,b)=>a.count-b.count||a.name.localeCompare(b.name));
+ // Limit repeated chain branches, while retaining other distinct places.
+ all=all.filter(p=>p.count<3);limit=24;render();if(!all.length)status('No named mapped places returned for this search. Try another category or the OpenStreetMap link.',true);
+ }catch(e){if(request===requestNumber)status('The live map service did not respond. This is not evidence that no places exist. Try the OpenStreetMap search link or another time.',true)}finally{if(request===requestNumber){button.disabled=false;button.textContent='Find '+groups[active].title.toLowerCase()+' ↗'}}
+}
+init();document.querySelectorAll('.bareroam-category-nav [data-travel-category]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();open(a.dataset.travelCategory)},true));
+$('v7Close').addEventListener('click',close);overlay.addEventListener('click',e=>{if(e.target===overlay)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))close()});
+$('v7Search').addEventListener('click',search);$('v7More').addEventListener('click',()=>{limit+=24;render()});$('v7Name').addEventListener('input',()=>{if(all.length){limit=24;render()}});city.addEventListener('change',updateLink);type.addEventListener('change',updateLink);
+})();
 </script>
 </body>
 </html>
