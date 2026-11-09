@@ -266,6 +266,11 @@ footer strong { color:inherit; }
 .v12-stay-action{margin-top:12px}.v12-stay-action button{width:100%}
 @media(max-width:720px){.v12-stay-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:420px){.v12-stay-grid{grid-template-columns:1fr}}
+.v13-flight{margin:14px 0;padding:16px;border:1px solid #dce3da;border-radius:14px;background:#f3f7f0}
+.v13-flight-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.v13-flight-grid .field{margin:0;min-width:0}.v13-flight-grid input,.v13-flight-grid select{width:100%;min-width:0;background:white}
+@media(max-width:950px){.v13-flight-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:550px){.v13-flight-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -438,7 +443,17 @@ Good value for the location. Small room, very clean, and quiet after midnight.</
 <div class="v12-stay-action"><button class="primary" id="v12Compare" type="button">Compare hotels on Google Hotels ↗</button></div>
 <p class="v12-stay-note">Hotel comparison opens Google Travel in a new tab. Dates and guest counts are included as search terms; verify that the external provider applies them before booking. Bareroam does not display or verify live rates, availability, or pet policies.</p>
 </div>
-<div id="v7Flight" class="hidden"><div class="v7-form"><div class="field"><label for="v7Origin">Departure city / airport</label><input id="v7Origin" placeholder="e.g. Istanbul"></div><div class="field"><label for="v7Depart">Departure date</label><input type="date" id="v7Depart"></div><div class="field"><label for="v7Return">Return date (optional)</label><input type="date" id="v7Return"></div></div><p class="v7-note">Flight search opens an independent flight-search provider. Bareroam does not receive live fares or availability.</p></div>
+<div id="v7Flight" class="v13-flight hidden" aria-label="Flight comparison details">
+<div class="v13-flight-grid">
+<div class="field"><label for="v13Trip">Trip type</label><select id="v13Trip"><option value="round">Round trip</option><option value="oneway">One way</option></select></div>
+<div class="field"><label for="v7Origin">Departure city / airport</label><input id="v7Origin" placeholder="e.g. Istanbul" autocomplete="off"></div>
+<div class="field"><label for="v7Depart">Departure date</label><input type="date" id="v7Depart"></div>
+<div class="field" id="v13ReturnWrap"><label for="v7Return">Return date</label><input type="date" id="v7Return"></div>
+<div class="field"><label for="v13Adults">Adults (12+)</label><select id="v13Adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></div>
+<div class="field"><label for="v13Children">Children (2–11)</label><select id="v13Children"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+<div class="field"><label for="v13Infants">Infants (under 2)</label><select id="v13Infants"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+<div class="field"><label for="v13Cabin">Cabin class</label><select id="v13Cabin"><option value="Economy">Economy</option><option value="Premium Economy">Premium Economy</option><option value="Business">Business</option><option value="First">First</option></select></div>
+</div><p class="v7-note">Compare flights on Google Flights. Departure, destination and dates are sent as search text. Passenger counts, trip type and cabin class may need to be selected again on Google Flights. Prices and availability are provided by Google, not Bareroam.</p></div>
 <div class="v7-actions"><button class="primary" id="v7Search">Find places ↗</button><button class="secondary" id="v7More" hidden>Show more</button><a class="small-link" id="v7External" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Open map search ↗</a></div>
 <div id="v7MapPreview" class="v7-map-preview" hidden></div><div id="v7Status" class="v7-status" role="status" aria-live="polite">Choose a destination and search.</div><div id="v7Results" class="v7-results"></div>
 <p class="v7-note">Map records © OpenStreetMap contributors. Data coverage varies. Hours, accessibility, pet policies and availability are not independently verified. Confirm with the venue before visiting.</p>
@@ -2761,6 +2776,14 @@ function open(key){if(!groups[key])return;$('v7MapPreview').hidden=true;restoreF
  overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';$('v7Close').focus();updateLink();
 }
 function close(){requestNumber++;overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');document.body.style.overflow='';if(restoreFocus?.focus)restoreFocus.focus()}
+function updateV13Trip(){
+ const oneway=$('v13Trip').value==='oneway';
+ $('v13ReturnWrap').classList.toggle('hidden',oneway);
+ $('v7Return').disabled=oneway;
+}
+$('v13Trip').addEventListener('change',updateV13Trip);
+$('v7Depart').addEventListener('change',()=>{ $('v7Return').min=$('v7Depart').value; });
+updateV13Trip();
 function updateLink(){const label=groups[active].types.find(t=>t[0]===type.value)?.[1]||groups[active].title;const term=label+' in '+city.options[city.selectedIndex]?.textContent;const a=$('v7External');a.href='https://www.openstreetmap.org/search?query='+encodeURIComponent(term);a.textContent='Search '+label.toLowerCase()+' on OpenStreetMap ↗';a.classList.toggle('hidden',active==='flights')}
 function status(message,error=false){$('v7Status').textContent=message;$('v7Status').classList.toggle('error',error)}
 function render(){const root=$('v7Results');root.replaceChildren();const term=$('v7Name').value.trim().toLocaleLowerCase();const filtered=all.filter(p=>!term||`${p.name} ${p.detail}`.toLocaleLowerCase().includes(term));
@@ -2775,8 +2798,17 @@ function render(){const root=$('v7Results');root.replaceChildren();const term=$(
 async function search(){if(active==='flights'){
  const origin=$('v7Origin').value.trim(),destination=city.options[city.selectedIndex]?.textContent||city.value;
  if(!origin){status('Enter a departure city or airport first.',true);return}
- const query=`Flights from ${origin} to ${destination} ${$('v7Depart').value||''} ${$('v7Return').value?'return '+$('v7Return').value:''}`;
- window.open('https://www.google.com/travel/flights?q='+encodeURIComponent(query),'_blank','noopener');status('Opened external flight search. Prices and availability are provided by the external site.');return;
+ const departure=$('v7Depart').value,returnDate=$('v7Return').value,oneway=$('v13Trip').value==='oneway';
+ if(!departure){status('Choose a departure date.',true);return}
+ if(departure<new Date().toLocaleDateString('en-CA')){status('Choose a future departure date.',true);return}
+ if(!oneway&&!returnDate){status('Choose a return date, or select One way.',true);return}
+ if(!oneway&&returnDate<departure){status('Return date cannot be before departure date.',true);return}
+ const adults=Number($('v13Adults').value),children=Number($('v13Children').value),infants=Number($('v13Infants').value);
+ if(infants>adults){status('Infants cannot outnumber adults. Please adjust passengers.',true);return}
+ const query=`Flights from ${origin} to ${destination} ${departure}${oneway?' one way':' return '+returnDate}`;
+ const url='https://www.google.com/travel/flights?q='+encodeURIComponent(query);
+ const opened=window.open(url,'_blank','noopener');
+ status('Google Flights search requested. On Google, confirm '+adults+' adult(s), '+children+' child(ren), '+infants+' infant(s), '+$('v13Cabin').value+' and your dates before booking.');return;
  }
  const centre=cityCentres[city.value],filter=groups[active].types.find(t=>t[0]===type.value)?.[2];if(!centre||!filter){status('Select a valid destination and place type.',true);return}
  const cacheKey='bareroam-v8:'+city.value+':'+active+':'+type.value;
