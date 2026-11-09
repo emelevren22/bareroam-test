@@ -453,7 +453,7 @@ Good value for the location. Small room, very clean, and quiet after midnight.</
 <div class="field"><label for="v13Children">Children (2–11)</label><select id="v13Children"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
 <div class="field"><label for="v13Infants">Infants (under 2)</label><select id="v13Infants"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
 <div class="field"><label for="v13Cabin">Cabin class</label><select id="v13Cabin"><option value="Economy">Economy</option><option value="Premium Economy">Premium Economy</option><option value="Business">Business</option><option value="First">First</option></select></div>
-</div><p class="v7-note">Compare flights on Google Flights. Departure, destination and dates are sent as search text. Passenger counts, trip type and cabin class may need to be selected again on Google Flights. Prices and availability are provided by Google, not Bareroam.</p></div>
+</div><div class="v13-flight-summary" id="v14FlightSummary" role="status" aria-live="polite" style="margin-top:14px;padding:14px 16px;border:1px solid #d6e1d7;border-radius:12px;background:#fff"><strong>Trip details to confirm on Google Flights</strong><p id="v14FlightSummaryText" style="margin:8px 0;line-height:1.6"></p><button type="button" id="v14CopyFlight" style="padding:9px 14px;border-radius:9px;border:1px solid #174f46;background:#fff;color:#174f46;font-weight:700;cursor:pointer">Copy trip details</button><span id="v14CopyStatus" style="margin-left:10px;font-size:13px" aria-live="polite"></span></div><p class="v7-note">Compare flights on Google Flights. Departure, destination and dates are sent as search text. Google Flights may default to 1 passenger and Economy. Confirm passenger counts, trip type and cabin class on Google before comparing prices. Prices and availability are provided by Google, not Bareroam.</p></div>
 <div class="v7-actions"><button class="primary" id="v7Search">Find places ↗</button><button class="secondary" id="v7More" hidden>Show more</button><a class="small-link" id="v7External" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Open map search ↗</a></div>
 <div id="v7MapPreview" class="v7-map-preview" hidden></div><div id="v7Status" class="v7-status" role="status" aria-live="polite">Choose a destination and search.</div><div id="v7Results" class="v7-results"></div>
 <p class="v7-note">Map records © OpenStreetMap contributors. Data coverage varies. Hours, accessibility, pet policies and availability are not independently verified. Confirm with the venue before visiting.</p>
@@ -2848,6 +2848,24 @@ $('v12Checkin').addEventListener('change',()=>{$('v12Checkout').min=$('v12Checki
 init();document.querySelectorAll('.bareroam-category-nav [data-travel-category]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();open(a.dataset.travelCategory)},true));
 $('v7Close').addEventListener('click',close);overlay.addEventListener('click',e=>{if(e.target===overlay)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))close()});
 $('v7Search').addEventListener('click',search);$('v7More').addEventListener('click',()=>{limit+=24;render()});$('v7Name').addEventListener('input',()=>{if(all.length){limit=24;render()}});city.addEventListener('change',updateLink);type.addEventListener('change',updateLink);
+})();
+</script>
+<script>
+(function(){
+  const ids=['v7City','v7Origin','v7Depart','v7Return','v13Trip','v13Adults','v13Children','v13Infants','v13Cabin'];
+  const $=id=>document.getElementById(id);
+  function summary(){
+    const destination=$('v7City')?.selectedOptions?.[0]?.textContent||$('v7City')?.value||'Not selected';
+    const trip=$('v13Trip')?.selectedOptions?.[0]?.textContent||'Round trip';
+    return `From: ${$('v7Origin')?.value||'Not selected'} | To: ${destination} | Trip: ${trip} | Departure: ${$('v7Depart')?.value||'Not selected'} | Return: ${$('v7Return')?.value||'Not selected'} | Adults: ${$('v13Adults')?.value||'2'} | Children: ${$('v13Children')?.value||'0'} | Infants: ${$('v13Infants')?.value||'0'} | Cabin: ${$('v13Cabin')?.value||'Economy'}`;
+  }
+  function refresh(){if($('v14FlightSummaryText')) $('v14FlightSummaryText').textContent=summary();}
+  ids.forEach(id=>{const el=$(id);if(el){el.addEventListener('change',refresh);el.addEventListener('input',refresh);}});
+  $('v14CopyFlight')?.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(summary());$('v14CopyStatus').textContent='Copied!';}
+    catch(e){$('v14CopyStatus').textContent='Select the summary text to copy.';}
+  });
+  refresh();
 })();
 </script>
 </body>
