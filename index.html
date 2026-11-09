@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="bareroam — plan thoughtfully, compare transparently, and keep your trip brief close at hand.">
 <meta name="theme-color" content="#174f46">
-<title>bareroam — Your world. Your way.</title>
+<title>bareroam — Your world. Your way. | V9</title>
 <style>
 :root {
   --site-primary: #174f46;
@@ -244,12 +244,34 @@ footer strong { color:inherit; }
 .bareroam-category-nav .cat-icon {display:flex; justify-content:center; align-items:center; height:36px; color:#174f46;}
 .bareroam-category-nav .category-svg {display:block; width:32px; height:32px;}
 .bareroam-category-nav a strong {font-size:13px; line-height:1.3;}
+
+/* V7: self-contained category workspace */
+.v7-overlay{position:fixed;inset:0;z-index:1000;background:rgba(12,31,24,.68);display:none;align-items:center;justify-content:center;padding:18px}
+.v7-overlay.open{display:flex}.v7-dialog{background:#fffefa;color:#20392d;border-radius:22px;width:min(980px,100%);max-height:94vh;overflow:auto;box-shadow:0 25px 80px #0005;padding:25px}
+.v7-head{display:flex;justify-content:space-between;align-items:start;gap:16px}.v7-head h2{margin:5px 0 7px}.v7-close{border:1px solid #d3dfd4;border-radius:10px;background:white;padding:9px 13px;font-size:20px}
+.v7-form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:18px 0}.v7-form .field{margin:0}.v7-form label{color:#294b3c}.v7-form input,.v7-form select{background:white;color:#20392d}
+.v7-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.v7-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0}.v7-result{border:1px solid #dce3da;border-radius:14px;padding:14px;min-width:0}.v7-result h3{font-size:15px;overflow-wrap:anywhere;margin:0 0 8px}.v7-result p{font-size:12px;color:#52685b;line-height:1.5}.v7-result a{font-size:12px;color:#174f46}.v7-note{font-size:12px;color:#52685b;line-height:1.6;margin:10px 0}.v7-status{padding:12px;border-radius:11px;background:#edf4ed;font-size:12px;line-height:1.6;margin-top:12px}.v7-status.error{background:#fff1df;color:#704515}.bareroam-category-nav a:focus-visible{outline:3px solid #174f46}
+@media(max-width:720px){.v7-form{grid-template-columns:1fr}.v7-results{grid-template-columns:1fr}.v7-dialog{padding:17px;max-height:96vh}}
+
+/* V9: self-contained brand and scenic illustration; no missing assets or unlicensed stock photography. */
+.brand-link .bareroam-wordmark{display:inline-block;font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:850;font-size:30px;letter-spacing:-.065em;color:#174f46;line-height:1.1}.wordmark-dot{color:#7c9b83}.brand-link{white-space:nowrap}
+.bareroam-hero{background:#f3f5ed}.bareroam-hero-photo{position:relative;isolation:isolate;background:linear-gradient(175deg,#8bc6d2 0%,#d5e8dc 53%,#f4e2b5 54%,#a4c9b8 100%);overflow:hidden}
+.coast-sun{position:absolute;right:17%;top:13%;width:94px;height:94px;border-radius:50%;background:#f9e4a8;box-shadow:0 0 55px #fff0b7a6}.coast-hill{position:absolute;left:-15%;bottom:23%;width:120%;height:45%;background:#4e8678;clip-path:polygon(0 100%,0 65%,20% 48%,35% 62%,52% 20%,70% 58%,85% 37%,100% 65%,100% 100%)}.coast-water{position:absolute;inset:70% 0 0;background:linear-gradient(180deg,#74b4b5,#2c7d89)}.coast-label{position:absolute;z-index:2;bottom:24px;right:25px;color:white;font-weight:700;font-size:14px;text-shadow:0 2px 8px #173e43}
+.v7-map-preview{margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid #dce3da}.v7-map-preview iframe{display:block;width:100%;height:280px;border:0}.v7-map-preview small{display:block;padding:8px 12px;color:#52685b;background:#f3f5ed}
+@media(max-width:650px){.brand-link .bareroam-wordmark{font-size:25px}}
+/* Stays comparison controls */
+.v12-stay-form{margin:14px 0;padding:16px;border:1px solid #dce3da;border-radius:14px;background:#f3f7f0}
+.v12-stay-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.v12-stay-grid .field{margin:0}.v12-stay-note{font-size:12px;color:#52685b;line-height:1.55;margin:12px 0 0}
+.v12-stay-action{margin-top:12px}.v12-stay-action button{width:100%}
+@media(max-width:720px){.v12-stay-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.v12-stay-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="app">
   <header class="topbar">
-    <a class="brand brand-link" href="#app" aria-label="bareroam home"><img src="assets/bareroam-logo.png" alt="bareroam — Your world. Your way."></a>
+    <a class="brand brand-link" href="#app" aria-label="bareroam home"><span class="bareroam-wordmark">bareroam<span class="wordmark-dot">.</span></span></a>
     <nav class="nav" aria-label="Main navigation">
       <a href="#realPlaces">Explore</a>
       <a href="#planner">Plan a Trip</a>
@@ -265,7 +287,7 @@ footer strong { color:inherit; }
       <p>A calmer way to shape your trip. Build a day-by-day plan, understand review patterns, and compare your options with clear trade-offs — not mystery scores.</p>
       <div class="hero-actions"><button class="primary" id="startBtn">Plan a trip ↘</button><button class="secondary" id="howBtn">How it works</button></div>
     </div>
-    <div class="bareroam-hero-photo" role="img" aria-label="Calm turquoise bay and coastal landscape"></div>
+    <div class="bareroam-hero-photo" role="img" aria-label="Stylized coastal landscape illustration"><div class="coast-sun"></div><div class="coast-hill"></div><div class="coast-water"></div><span class="coast-label">Your next story starts here.</span></div>
   </section>
   <div class="bareroam-category-nav" aria-label="Travel categories">
     <a href="#categoryExplore" data-travel-category="stays"><span class="cat-icon"><svg class="category-svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18V7"/><path d="M3 13h18v5H3z"/><path d="M6 13V9a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M14 10h5a2 2 0 0 1 2 2v1"/><path d="M3 18v3m18-3v3"/></svg></span><strong>Stays</strong></a>
@@ -278,7 +300,7 @@ footer strong { color:inherit; }
     <a href="#categoryExplore" data-travel-category="health"><span class="cat-icon"><svg class="category-svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M10 7h4m-2-2v4M8 14h8M8 18h8"/></svg></span><strong>Health & Care</strong></a>
   </div>
   <section class="category-explainer" id="categoryExplore" aria-live="polite">
-    <div><span class="eyebrow">BARE­ROAM V6 / EXPLORE BY INTEREST</span><h2 id="categoryHeading">Choose how you travel</h2><p id="categoryDescription">Select any category above to discover relevant real-world places.</p></div>
+    <div><span class="eyebrow">BAREROAM / EXPLORE BY INTEREST</span><h2 id="categoryHeading">Explore your way</h2><p id="categoryDescription">Choose a category to open its own search panel. Start with Stays, Things to Do, Food & Dining or Shopping.</p></div>
     <button class="primary" id="categoryExploreButton" type="button">Explore this category ↗</button>
   </section>
   <main>
@@ -369,9 +391,9 @@ Good value for the location. Small room, very clean, and quiet after midnight.</
       </section>
     </div>
     <section class="panel places-section" id="realPlaces">
-      <div class="eyebrow">02 / Smart Global Explorer · V5.1</div>
+      <div class="eyebrow">02 / Explore real places</div>
       <h2 style="font-size:26px;margin-bottom:8px">From the map to your shortlist.</h2>
-      <p class="sub">Discover real OpenStreetMap records for cafés, museums, parks & gardens, and shops. Search by name, browse more results, and save favourites. Live neighbourhood search is available for supported areas; other areas link to OpenStreetMap.</p>
+      <p class="sub">Search mapped places, save favourites, and verify details with the venue. Live map services can be temporarily unavailable; use the external map search if needed.</p>
       <div class="explorer-filters">
         <div class="field"><label for="explorerCountry">Country</label><select id="explorerCountry"></select></div>
         <div class="field"><label for="explorerDestination">City / destination</label><select id="explorerDestination"></select></div>
@@ -385,7 +407,7 @@ Good value for the location. Small room, very clean, and quiet after midnight.</
       <a id="placesFallbackLink" class="place-fallback-link hidden" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Open a manual map search ↗</a>
       <div id="placesResults" class="places-grid" aria-live="polite"></div>
       <button class="secondary hidden" id="loadMorePlaces" type="button">Load more places ↓</button>
-      <p class="place-attribution">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · <a href="https://wiki.openstreetmap.org/wiki/Overpass_API" target="_blank" rel="noopener">Overpass API</a>. Live searches use the Tripwise AI Cloudflare service and may be rate-limited. Verify details with the venue before visiting.</p>
+      <p class="place-attribution">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · <a href="https://wiki.openstreetmap.org/wiki/Overpass_API" target="_blank" rel="noopener">Overpass API</a>. Live searches use the Bareroam map service and may be rate-limited. Verify details with the venue before visiting.</p>
     </section>
     <section class="panel places-section" id="myShortlist">
       <div class="eyebrow">03 / My trip shortlist</div>
@@ -396,13 +418,42 @@ Good value for the location. Small room, very clean, and quiet after midnight.</
       <div id="shortlistResults" class="places-grid"></div>
     </section>
     <div class="bottom-grid" id="sources">
-      <section class="panel"><div class="eyebrow">04 / Know the source</div><h2 style="font-size:26px;margin-bottom:8px">Trust should be visible.</h2><p class="sub">The production product will label what is verified, what is user-provided, and what is generated. This prototype intentionally does not pretend to have live integrations.</p><div class="source-row"><div><strong>OpenStreetMap</strong><br><span>Live source for mapped places (coverage varies)</span></div><a class="small-link" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Explore ↗</a></div><div class="source-row"><div><strong>Amadeus for Developers</strong><br><span>Test environment for flight API evaluation</span></div><a class="small-link" href="https://developers.amadeus.com/" target="_blank" rel="noopener">Docs ↗</a></div><div class="source-row"><div><strong>Google Places</strong><br><span>Potential paid/billing-enabled integration</span></div><a class="small-link" href="https://developers.google.com/maps/documentation/places/web-service/overview" target="_blank" rel="noopener">Docs ↗</a></div><div class="source-row"><div><strong>Booking.com Demand API</strong><br><span>Partner access required</span></div><a class="small-link" href="https://developers.booking.com/" target="_blank" rel="noopener">Docs ↗</a></div></section>
-      <section class="panel"><div class="eyebrow">05 / The promise</div><h2 style="font-size:26px;margin-bottom:8px">Fewer tabs. Better choices.</h2><p class="sub">Tripwise AI should help you understand the why behind a recommendation — and show the uncertainty when data is missing.</p><div class="source-row"><strong>Personal fit</strong><span>Built around your preferences</span></div><div class="source-row"><strong>Review themes</strong><span>Patterns, not cherry-picked quotes</span></div><div class="source-row"><strong>Transparent comparisons</strong><span>Trade-offs and source status</span></div><div class="source-row"><strong>No made-up live prices</strong><span>Clear labels for every data type</span></div><button class="secondary full" id="feedbackBtn">Give prototype feedback</button></section>
+      <section class="panel"><div class="eyebrow">04 / Know the source</div><h2 style="font-size:26px;margin-bottom:8px">Trust should be visible.</h2><p class="sub">Live map records are sourced from OpenStreetMap when available. Sample itineraries are demonstrations; booking prices and availability are not connected.</p><div class="source-row"><div><strong>OpenStreetMap</strong><br><span>Live source for mapped places (coverage varies)</span></div><a class="small-link" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Explore ↗</a></div><div class="source-row"><div><strong>Amadeus for Developers</strong><br><span>Test environment for flight API evaluation</span></div><a class="small-link" href="https://developers.amadeus.com/" target="_blank" rel="noopener">Docs ↗</a></div><div class="source-row"><div><strong>Google Places</strong><br><span>Potential paid/billing-enabled integration</span></div><a class="small-link" href="https://developers.google.com/maps/documentation/places/web-service/overview" target="_blank" rel="noopener">Docs ↗</a></div><div class="source-row"><div><strong>Booking.com Demand API</strong><br><span>Partner access required</span></div><a class="small-link" href="https://developers.booking.com/" target="_blank" rel="noopener">Docs ↗</a></div></section>
+      <section class="panel"><div class="eyebrow">05 / The promise</div><h2 style="font-size:26px;margin-bottom:8px">Fewer tabs. Better choices.</h2><p class="sub">Bareroam helps you understand the why behind a recommendation — and show the uncertainty when data is missing.</p><div class="source-row"><strong>Personal fit</strong><span>Built around your preferences</span></div><div class="source-row"><strong>Review themes</strong><span>Patterns, not cherry-picked quotes</span></div><div class="source-row"><strong>Transparent comparisons</strong><span>Trade-offs and source status</span></div><div class="source-row"><strong>No made-up live prices</strong><span>Clear labels for every data type</span></div><button class="secondary full" id="feedbackBtn">Give prototype feedback</button></section>
     </div>
   </main>
-  <footer><div><strong>tripwise AI</strong> · A concept prototype for thoughtful travel planning.</div><div>Not a booking service. Demonstration itinerary and scores are not live offers or verified recommendations.</div></footer>
+  <footer><div><strong>bareroam</strong> · Early-access travel planning prototype.</div><div>Not a booking service. Demonstration itinerary and scores are not live offers or verified recommendations.</div></footer>
 </div>
+
+<div id="v7Overlay" class="v7-overlay" aria-hidden="true"><section class="v7-dialog" role="dialog" aria-modal="true" aria-labelledby="v7Title">
+<div class="v7-head"><div><div class="eyebrow">BAREROAM · EXPLORE</div><h2 id="v7Title">Explore</h2><p id="v7Intro" class="v7-note"></p></div><button id="v7Close" class="v7-close" aria-label="Close category">×</button></div>
+<div class="v7-form"><div class="field"><label for="v7City">Destination</label><select id="v7City"></select></div><div class="field"><label for="v7Type">What are you looking for?</label><select id="v7Type"></select></div><div class="field"><label for="v7Name">Filter results by name</label><input id="v7Name" placeholder="e.g. museum, boutique" autocomplete="off"></div></div>
+<div id="v12Stay" class="v12-stay-form hidden" aria-label="Accommodation search details">
+<div class="v12-stay-grid">
+<div class="field"><label for="v12Checkin">Check-in</label><input id="v12Checkin" type="date"></div>
+<div class="field"><label for="v12Checkout">Check-out</label><input id="v12Checkout" type="date"></div>
+<div class="field"><label for="v12Adults">Adults</label><select id="v12Adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+<div class="field"><label for="v12Children">Children</label><select id="v12Children"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+</div>
+<div class="v12-stay-action"><button class="primary" id="v12Compare" type="button">Compare hotels on Google Hotels ↗</button></div>
+<p class="v12-stay-note">Hotel comparison opens Google Travel in a new tab. Dates and guest counts are included as search terms; verify that the external provider applies them before booking. Bareroam does not display or verify live rates, availability, or pet policies.</p>
+</div>
+<div id="v7Flight" class="hidden"><div class="v7-form"><div class="field"><label for="v7Origin">Departure city / airport</label><input id="v7Origin" placeholder="e.g. Istanbul"></div><div class="field"><label for="v7Depart">Departure date</label><input type="date" id="v7Depart"></div><div class="field"><label for="v7Return">Return date (optional)</label><input type="date" id="v7Return"></div></div><p class="v7-note">Flight search opens an independent flight-search provider. Bareroam does not receive live fares or availability.</p></div>
+<div class="v7-actions"><button class="primary" id="v7Search">Find places ↗</button><button class="secondary" id="v7More" hidden>Show more</button><a class="small-link" id="v7External" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Open map search ↗</a></div>
+<div id="v7MapPreview" class="v7-map-preview" hidden></div><div id="v7Status" class="v7-status" role="status" aria-live="polite">Choose a destination and search.</div><div id="v7Results" class="v7-results"></div>
+<p class="v7-note">Map records © OpenStreetMap contributors. Data coverage varies. Hours, accessibility, pet policies and availability are not independently verified. Confirm with the venue before visiting.</p>
+</section></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/* Set your Cloudflare Worker URL once with ?map_api=https://YOUR-WORKER.workers.dev */
+const BAREROAM_MAP_API = (() => {
+  const q = new URLSearchParams(location.search).get('map_api');
+  if (q && /^https:\/\/[a-z0-9.-]+\.workers\.dev\/?$/i.test(q)) {
+    try {localStorage.setItem('bareroam_map_api',q.replace(/\/$/,''));} catch(e) {}
+  }
+  try {return localStorage.getItem('bareroam_map_api')||'https://bareroam-map-api.emelevren22.workers.dev';} catch(e) {return 'https://bareroam-map-api.emelevren22.workers.dev'}
+})();
+</script>
 <script>
 const destinationData = {
   Lisbon: {
@@ -2333,9 +2384,8 @@ async function bareroamDirectOSM(city,category) {
   const radius=category==='airports'?25000:3500;
   const query=`[out:json][timeout:18];(node(around:${radius},${lat},${lon})${filter};way(around:${radius},${lat},${lon})${filter};relation(around:${radius},${lat},${lon})${filter};);out center 180;`;
   const endpoints=[
-    'https://overpass.kumi.systems/api/interpreter',
-    'https://overpass.nchc.org.tw/api/interpreter',
-    'https://overpass-api.de/api/interpreter'
+    ...(BAREROAM_MAP_API?[BAREROAM_MAP_API+'/api/interpreter']:[]),
+    ...(!BAREROAM_MAP_API?['https://overpass.private.coffee/api/interpreter']:[])
   ];
   let lastError;
   for(const endpoint of endpoints) {
@@ -2619,7 +2669,7 @@ function exportItinerary() {
     const matches=[...s.querySelectorAll('.match-label')].map(m=>m.innerText).join(', ');
     return `- **${time} — ${title}**: ${desc}${matches?` (${matches})`:''}`;
   }).join('\n')}`).join('\n\n');
-  const md=`# ${heading}\n\n${subtitle}\n\n## Trip details\n\n${details}\n\n## Day-by-day plan\n\n${days}\n\n---\n\n**Tripwise AI prototype note:** This itinerary is illustrative demo content, not live AI output or verified opening hours, prices, availability, or bookings. Check details before travelling.\n`;
+  const md=`# ${heading}\n\n${subtitle}\n\n## Trip details\n\n${details}\n\n## Day-by-day plan\n\n${days}\n\n---\n\n**Bareroam prototype note:** This itinerary is illustrative demo content, not live AI output or verified opening hours, prices, availability, or bookings. Check details before travelling.\n`;
   downloadFile(`tripwise-${p.destination.toLowerCase()}-itinerary.md`,md,'text/markdown;charset=utf-8');
   showToast('Your itinerary was downloaded as a Markdown file.');
 }
@@ -2638,7 +2688,7 @@ document.getElementById('clearShortlist').addEventListener('click',()=>{
 document.getElementById('saveTop').addEventListener('click',exportPreferences);
 document.getElementById('exportPlan').addEventListener('click',exportItinerary);
 document.getElementById('printPlan').addEventListener('click',()=>{renderPlan();setTab('plan');window.print();});
-document.getElementById('feedbackBtn').addEventListener('click',()=>{const message=prompt('What should Tripwise AI do better? Your feedback stays in this prototype and is not sent anywhere.');if(message&&message.trim())showToast('Thanks — this prototype does not transmit feedback yet.');});
+document.getElementById('feedbackBtn').addEventListener('click',()=>{const message=prompt('What should Bareroam do better? Your feedback stays in this prototype and is not sent anywhere.');if(message&&message.trim())showToast('Thanks — this prototype does not transmit feedback yet.');});
 loadPreferences();
   const destinationSelect = document.getElementById('destination');
 const destinationOptions = Array.from(
@@ -2677,10 +2727,96 @@ function activateV6Category(key){
   const select=document.getElementById('placeCategory');select.value=item.place;
   if(typeof resetPlaceResults==='function')resetPlaceResults();
   document.getElementById('categoryExploreButton').textContent=`Find ${item.title} ↗`;
-  document.getElementById('categoryExploreButton').onclick=()=>{document.getElementById('realPlaces').scrollIntoView({behavior:'smooth'});document.getElementById('findPlaces').click();};
+  document.getElementById('categoryExploreButton').onclick=()=>{const tile=document.querySelector('.bareroam-category-nav [data-travel-category=\"'+key+'\"]');if(tile)tile.click();};
 }
 document.querySelectorAll('[data-travel-category]').forEach(a=>a.addEventListener('click',()=>activateV6Category(a.dataset.travelCategory)));
 activateV6Category('activities');
+</script>
+
+<script>
+/* Bareroam V8 city sync and multi-endpoint search. V7 category workspace. Existing planner, shortlist and explorer are preserved. */
+(()=>{
+const groups={
+ stays:{title:'Stays',intro:'Hotels, guesthouses and apartments. Booking availability and pet policies require confirmation.',types:[['hotels','Hotels','["tourism"="hotel"]'],['apartments','Apartments','["tourism"="apartment"]'],['guesthouses','Guesthouses & hostels','["tourism"~"^(guest_house|hostel|motel)$"]'],['all','All accommodation','["tourism"~"^(hotel|hostel|guest_house|motel|apartment)$"]']]},
+ flights:{title:'Flights',intro:'Compare flight options using an external search service. Live fares are not integrated.',types:[['flights','Flight search','']]},
+ activities:{title:'Things to Do',intro:'Explore landmarks, museums, galleries and attractions.',types:[['attractions','Attractions & landmarks','["tourism"~"^(attraction|viewpoint|zoo|theme_park)$"]'],['museums','Museums & galleries','["tourism"~"^(museum|gallery)$"]'],['historic','Historic sites','["historic"]'],['parks','Parks & gardens','["leisure"~"^(park|garden)$"]']]},
+ dining:{title:'Food & Dining',intro:'Find places to eat and drink. Menus, prices and hours must be checked.',types:[['restaurants','Restaurants','["amenity"="restaurant"]'],['cafes','Cafés & coffee','["amenity"="cafe"]'],['fastfood','Casual & quick bites','["amenity"~"^(fast_food|food_court)$"]'],['bakeries','Bakeries','["shop"="bakery"]']]},
+ shopping:{title:'Shopping',intro:'Discover shopping centres, fashion, boutiques and beauty stores. Supermarkets are excluded from these selections.',types:[['malls','Shopping centres & malls','["shop"="mall"]'],['fashion','Fashion & boutiques','["shop"~"^(clothes|boutique|fashion|shoes|department_store)$"]'],['beauty','Beauty & cosmetics','["shop"~"^(cosmetics|perfumery|beauty)$"]'],['gifts','Gifts, jewellery & design','["shop"~"^(gift|jewelry|jewellery|art|craft)$"]'],['outlets','Outlet-labelled shops','["name"~"outlet",i]["shop"]']]},
+ family:{title:'Family Travel',intro:'Family outing ideas; child suitability, changing facilities and stroller access are not verified.',types:[['playgrounds','Playgrounds','["leisure"="playground"]'],['parks','Parks & gardens','["leisure"~"^(park|garden)$"]'],['familyfun','Zoos & theme parks','["tourism"~"^(zoo|theme_park)$"]'],['baby','Baby & children shops','["shop"~"^(baby_goods|toys)$"]']]},
+ pets:{title:'Pet Travel',intro:'Pet services and outdoor spaces. A mapped location does not guarantee pets are admitted.',types:[['petshops','Pet supply stores','["shop"="pet"]'],['vets','Veterinarians','["amenity"="veterinary"]'],['dogparks','Dog parks','["leisure"="dog_park"]'],['petstays','Pet-tagged accommodation (unverified)','["tourism"~"^(hotel|guest_house|apartment)$"]["dog"~"^(yes|leashed)$"]']]},
+ health:{title:'Health & Care',intro:'Mapped medical services. Never assume a pharmacy is open or an emergency department is available without direct confirmation.',types:[['pharmacies','Pharmacies','["amenity"="pharmacy"]'],['hospitals','Hospitals','["amenity"="hospital"]'],['clinics','Clinics & doctors','["amenity"~"^(clinic|doctors)$"]'],['dentists','Dentists','["amenity"="dentist"]']]}
+};
+const $=id=>document.getElementById(id),overlay=$('v7Overlay'),city=$('v7City'),type=$('v7Type');
+let active='stays',all=[],limit=24,requestNumber=0,restoreFocus=null;
+function init(){
+ const cities=Object.entries(countryDestinations).flatMap(([country,names])=>names.filter(n=>cityCentres[n]).map(n=>({id:n,label:`${n.replace(/([a-z])([A-Z])/g,'$1 $2')}, ${country}`}))).sort((a,b)=>a.label.localeCompare(b.label,'en'));
+ for(const c of cities){const o=document.createElement('option');o.value=c.id;o.textContent=c.label;city.append(o)}
+ const mainCity=$('destination')?.value||$('explorerDestination')?.value||'Paris';city.value=cityCentres[mainCity]?mainCity:'Paris';
+}
+function open(key){if(!groups[key])return;$('v7MapPreview').hidden=true;restoreFocus=document.activeElement;active=key;requestNumber++;const g=groups[key];$('v7Title').textContent=g.title;$('v7Intro').textContent=g.intro;
+ type.replaceChildren();for(const [value,label] of g.types){const o=document.createElement('option');o.value=value;o.textContent=label;type.append(o)}
+ $('v12Stay').classList.toggle('hidden',key!=='stays');$('v7Flight').classList.toggle('hidden',key!=='flights');$('v7Name').parentElement.classList.toggle('hidden',key==='flights');$('v7Search').textContent=key==='flights'?'Search flights externally ↗':'Find '+g.title.toLowerCase()+' ↗';
+ $('v7Results').replaceChildren();$('v7More').hidden=true;$('v7Status').textContent=key==='flights'?'Enter your flight details to open an external flight search.':'Select a place type and press Find.';
+ const selected=$('destination')?.value||$('explorerDestination')?.value;if(cityCentres[selected])city.value=selected;
+ overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';$('v7Close').focus();updateLink();
+}
+function close(){requestNumber++;overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');document.body.style.overflow='';if(restoreFocus?.focus)restoreFocus.focus()}
+function updateLink(){const label=groups[active].types.find(t=>t[0]===type.value)?.[1]||groups[active].title;const term=label+' in '+city.options[city.selectedIndex]?.textContent;const a=$('v7External');a.href='https://www.openstreetmap.org/search?query='+encodeURIComponent(term);a.textContent='Search '+label.toLowerCase()+' on OpenStreetMap ↗';a.classList.toggle('hidden',active==='flights')}
+function status(message,error=false){$('v7Status').textContent=message;$('v7Status').classList.toggle('error',error)}
+function render(){const root=$('v7Results');root.replaceChildren();const term=$('v7Name').value.trim().toLocaleLowerCase();const filtered=all.filter(p=>!term||`${p.name} ${p.detail}`.toLocaleLowerCase().includes(term));
+ for(const p of filtered.slice(0,limit)){
+ const card=document.createElement('article');card.className='v7-result';const h=document.createElement('h3');h.textContent=p.name;const detail=document.createElement('p');detail.textContent=p.detail;
+ const link=document.createElement('a');link.href=p.mapUrl;link.target='_blank';link.rel='noopener';link.textContent='View on OpenStreetMap ↗';
+ const save=document.createElement('button');save.className='save-place';save.type='button';const saved={...p,city:city.value,category:active,area:'',categoryLabel:groups[active].title};
+ const refresh=()=>{const yes=isPlaceSaved(saved);save.textContent=yes?'♥ Saved — remove':'♡ Save to my trip';save.classList.toggle('saved',yes)};save.addEventListener('click',()=>{toggleSavedPlace(saved);refresh()});refresh();card.append(h,detail,link,save);root.append(card)
+ }
+ $('v7More').hidden=filtered.length<=limit;status(`${filtered.length} mapped place${filtered.length===1?'':'s'} matched · showing ${Math.min(filtered.length,limit)}. Map coverage and details may be incomplete.`)
+}
+async function search(){if(active==='flights'){
+ const origin=$('v7Origin').value.trim(),destination=city.options[city.selectedIndex]?.textContent||city.value;
+ if(!origin){status('Enter a departure city or airport first.',true);return}
+ const query=`Flights from ${origin} to ${destination} ${$('v7Depart').value||''} ${$('v7Return').value?'return '+$('v7Return').value:''}`;
+ window.open('https://www.google.com/travel/flights?q='+encodeURIComponent(query),'_blank','noopener');status('Opened external flight search. Prices and availability are provided by the external site.');return;
+ }
+ const centre=cityCentres[city.value],filter=groups[active].types.find(t=>t[0]===type.value)?.[2];if(!centre||!filter){status('Select a valid destination and place type.',true);return}
+ const cacheKey='bareroam-v8:'+city.value+':'+active+':'+type.value;
+ try{const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');if(cached&&Date.now()-cached.at<12*60*60*1000&&Array.isArray(cached.items)&&cached.items.length){all=cached.items;limit=24;render();status('Showing saved map results from a previous search. Check details with the venue.');return}}catch(e){}
+ $('v7MapPreview').hidden=true;const request=++requestNumber;const button=$('v7Search');button.disabled=true;button.textContent='Searching…';all=[];$('v7Results').replaceChildren();$('v7More').hidden=true;status(BAREROAM_MAP_API?'Searching through Bareroam map gateway…':'Searching public map services. For reliable in-page results, connect the Bareroam map gateway.');
+ const radius=3500,query=`[out:json][timeout:22];(node(around:${radius},${centre.lat},${centre.lon})${filter};way(around:${radius},${centre.lat},${centre.lon})${filter};relation(around:${radius},${centre.lat},${centre.lon})${filter};);out center 180;`;
+ const endpoints=BAREROAM_MAP_API?[BAREROAM_MAP_API+'/api/interpreter']:['https://overpass.private.coffee/api/interpreter'];let err;
+ try{let elements=null;for(const endpoint of endpoints){if(request!==requestNumber)return;try{elements=await bareroamFetchWithTimeout(endpoint+'?data='+encodeURIComponent(query),11000);break}catch(e){err=e}}
+ if(request!==requestNumber)return;if(!elements)throw err||Error('Map search unavailable');const seen=new Set();const counts=new Map();
+ all=elements.map(el=>{const tags=el.tags||{},name=tags.name||tags['name:en']||'',lat=el.lat??el.center?.lat,lon=el.lon??el.center?.lon;
+ if(!name||!Number.isFinite(lat)||!Number.isFinite(lon))return null;
+ const id=`${name.toLocaleLowerCase()}|${lat.toFixed(4)}|${lon.toFixed(4)}`;if(seen.has(id))return null;seen.add(id);
+ const chain=(tags.brand||tags.operator||name).toLocaleLowerCase().trim();const count=counts.get(chain)||0;counts.set(chain,count+1);
+ const detail=[tags['addr:street'],tags.cuisine,tags.shop,tags.tourism,tags.amenity,tags.opening_hours?'Hours (unverified): '+tags.opening_hours:''].filter(Boolean).join(' · ')||'Mapped place · details not independently verified';
+ return {name,detail,lat,lon,mapUrl:`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=17/${lat}/${lon}`,chain,count}
+ }).filter(Boolean).sort((a,b)=>a.count-b.count||a.name.localeCompare(b.name));
+ // Limit repeated chain branches, while retaining other distinct places.
+ all=all.filter(p=>p.count<3);try{if(all.length)localStorage.setItem(cacheKey,JSON.stringify({at:Date.now(),items:all}))}catch(e){}limit=24;render();if(!all.length)status('No named map records returned in the search radius. Try another place type or use the OpenStreetMap link above.',true);
+ }catch(e){if(request===requestNumber){
+ const preview=$('v7MapPreview');preview.replaceChildren();const c=cityCentres[city.value];
+ if(c){const d=.025,frame=document.createElement('iframe');frame.title='OpenStreetMap map of '+city.value;frame.loading='lazy';frame.referrerPolicy='no-referrer';frame.src='https://www.openstreetmap.org/export/embed.html?bbox='+encodeURIComponent([c.lon-d,c.lat-d,c.lon+d,c.lat+d].join(','))+'&layer=mapnik';const note=document.createElement('small');note.textContent='Live place listing is temporarily unavailable. Explore the map here, or open the hotel search above. This map does not verify availability.';preview.append(frame,note);preview.hidden=false;}
+ status('The live place list is unavailable in this browser. The map below is available, and the OpenStreetMap search link above opens matching places. This is not a booking availability search.',true);
+ }}finally{if(request===requestNumber){button.disabled=false;button.textContent='Find '+groups[active].title.toLowerCase()+' ↗'}}
+}
+$('v12Compare').addEventListener('click',()=>{
+ const checkin=$('v12Checkin').value,checkout=$('v12Checkout').value;
+ if(!checkin||!checkout){status('Choose both check-in and check-out dates to compare hotels.',true);return}
+ if(checkout<=checkin){status('Check-out must be after check-in.',true);return}
+ const destination=city.options[city.selectedIndex]?.textContent||city.value;
+ const query=`Hotels in ${destination} check-in ${checkin} check-out ${checkout} ${$('v12Adults').value} adults ${$('v12Children').value} children`;
+ window.open('https://www.google.com/travel/hotels?q='+encodeURIComponent(query),'_blank','noopener');
+ status('Opened Google Hotels in a new tab. Confirm dates, guest count, live prices and availability on the external website.');
+});
+const today=new Date();const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+$('v12Checkin').min=iso(today);$('v12Checkout').min=iso(today);
+$('v12Checkin').addEventListener('change',()=>{$('v12Checkout').min=$('v12Checkin').value||iso(today);if($('v12Checkout').value&&$('v12Checkout').value<=$('v12Checkin').value)$('v12Checkout').value=''});
+init();document.querySelectorAll('.bareroam-category-nav [data-travel-category]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();open(a.dataset.travelCategory)},true));
+$('v7Close').addEventListener('click',close);overlay.addEventListener('click',e=>{if(e.target===overlay)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))close()});
+$('v7Search').addEventListener('click',search);$('v7More').addEventListener('click',()=>{limit+=24;render()});$('v7Name').addEventListener('input',()=>{if(all.length){limit=24;render()}});city.addEventListener('change',updateLink);type.addEventListener('change',updateLink);
+})();
 </script>
 </body>
 </html>
