@@ -2796,6 +2796,7 @@ function render(){const root=$('v7Results');root.replaceChildren();const term=$(
  $('v7More').hidden=filtered.length<=limit;status(`${filtered.length} mapped place${filtered.length===1?'':'s'} matched · showing ${Math.min(filtered.length,limit)}. Map coverage and details may be incomplete.`)
 }
 // Google Flights structured deep link (undocumented tfs format; verify in Google UI).
+// Trip-type enum correction: 1 = round trip, 2 = one way (subject to provider changes).
 const BAREROAM_FLIGHT_CODES = {
  Lisbon:'LIS',Paris:'PAR',London:'LON',Copenhagen:'CPH',Nice:'NCE',Lyon:'LYS',Rome:'ROM',Milan:'MIL',Florence:'FLR',Venice:'VCE',Barcelona:'BCN',Madrid:'MAD',Berlin:'BER',Munich:'MUC',Amsterdam:'AMS',Zurich:'ZRH',Athens:'ATH',Vienna:'VIE',Prague:'PRG',Budapest:'BUD',NewYork:'NYC',Tokyo:'TYO',Dubai:'DXB',Istanbul:'IST',Antalya:'AYT',Izmir:'IZM',Bodrum:'BJV',Porto:'OPO',Faro:'FAO',Funchal:'FNC',Marseille:'MRS',Bordeaux:'BOD',Toulouse:'TLS',Strasbourg:'SXB',Lille:'LIL',Nantes:'NTE',Edinburgh:'EDI',Glasgow:'GLA',Manchester:'MAN',Liverpool:'LPL',Birmingham:'BHX',Bristol:'BRS',Naples:'NAP',Turin:'TRN',Bologna:'BLQ',Verona:'VRN',Genoa:'GOA',Palermo:'PMO',Catania:'CTA',Pisa:'PSA',Bari:'BRI',Seville:'SVQ',Valencia:'VLC',Malaga:'AGP',Bilbao:'BIO',Zaragoza:'ZAZ',Alicante:'ALC',Palma:'PMI',Hamburg:'HAM',Frankfurt:'FRA',Cologne:'CGN',Dusseldorf:'DUS',Stuttgart:'STR',Dresden:'DRS',Leipzig:'LEJ',Nuremberg:'NUE',Rotterdam:'RTM',Eindhoven:'EIN',Geneva:'GVA',Basel:'BSL',Bern:'BRN',Thessaloniki:'SKG',Heraklion:'HER',Chania:'CHQ'
 };
