@@ -289,6 +289,23 @@ footer strong { color:inherit; }
 .bareroam-slide-dot:focus-visible{outline:3px solid #f2c65a;outline-offset:3px}
 @media(max-width:650px){.bareroam-photo-slider{min-height:255px}.bareroam-slide-caption{font-size:12px;right:15px;bottom:45px}}
 @media(prefers-reduced-motion:reduce){.bareroam-photo-slider .bareroam-slide{transition:none}}
+
+/* V13: language selector and accessible How it works dialog */
+.br-lang-wrap{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;border:1px solid #c5d0c3;border-radius:999px;padding:5px 8px;background:#faf8f2;color:#234738;font-size:12px}
+.br-lang-wrap select{background:transparent;border:0;outline-offset:3px;color:inherit;font:inherit;cursor:pointer;max-width:88px}
+.br-lang-visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.bareroam-hero-signoff{font-size:13px!important;color:#54705c!important;margin-top:13px!important;font-weight:600}
+.br-modal-backdrop[hidden]{display:none!important}
+.br-modal-backdrop{position:fixed;inset:0;z-index:99999;background:rgba(20,43,34,.58);display:flex;align-items:center;justify-content:center;padding:20px}
+.br-modal{position:relative;max-width:560px;width:100%;max-height:90vh;overflow:auto;border-radius:22px;background:#faf8f1;color:#244739;padding:clamp(22px,5vw,42px);box-shadow:0 22px 80px #102b2340}
+.br-modal-close{position:absolute;top:12px;right:15px;border:0;background:transparent;color:#244739;font-size:30px;cursor:pointer;padding:4px 10px}
+.br-modal-brand{font-size:16px;font-weight:800;color:#24513e;margin-bottom:22px}
+.br-modal-brand span{font-size:10px;letter-spacing:.09em;font-weight:500}
+.br-modal h2{font-size:clamp(24px,4vw,34px);line-height:1.2;margin:0 0 15px;color:#244739}
+.br-modal p{font-size:15px;line-height:1.75;margin:0 0 15px}
+.br-modal .br-modal-lead{font-size:17px;font-weight:700;color:#355d47}
+.br-modal .primary{margin-top:10px}
+@media(max-width:720px){.br-lang-wrap{margin:6px 0}.br-modal{padding:25px}}
 </style>
 </head>
 <body>
@@ -301,14 +318,14 @@ footer strong { color:inherit; }
       <a href="#planner" id="compareNav">Compare</a>
       <a href="#sources">Travel Insights</a>
       <button class="pill" id="saveTop">Save trip brief ↓</button>
-    </nav>
+    <label class="br-lang-wrap" for="br-language"><span aria-hidden="true">🌐</span><span class="br-lang-visually-hidden">Language</span><select id="br-language" aria-label="Choose language"><option value="en">🇬🇧 EN</option><option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option><option value="tr">🇹🇷 TR</option><option value="it">🇮🇹 IT</option><option value="fr">🇫🇷 FR</option></select></label></nav>
   </header>
   <section class="hero bareroam-hero" aria-labelledby="bareroam-title">
     <div class="bareroam-hero-content">
       <div class="eyebrow">Travel, thoughtfully</div>
       <h1 id="bareroam-title">Less scrolling.<br>More <em>being there.</em></h1>
-      <p>A calmer way to shape your trip. Build a day-by-day plan, understand review patterns, and compare your options with clear trade-offs — not mystery scores.</p>
-      <div class="hero-actions"><button class="primary" id="startBtn">Plan a trip ↘</button><button class="secondary" id="howBtn">How it works</button></div>
+      <p>Discover inspiring destinations, explore hidden gems, and create travel experiences that feel uniquely yours — all in one place.</p>
+      <div class="hero-actions"><button class="primary" id="startBtn">Plan a trip ↘</button><button class="secondary" id="howBtn">How it works</button></div><p class="bareroam-hero-signoff">Less scrolling. More being there.</p>
     </div>
     <div class="bareroam-hero-photo bareroam-photo-slider" aria-label="Travel destination images">
 <img class="bareroam-slide is-active" src="assets/01-mediterranean.jpg" alt="Mediterranean cove — AI-generated travel illustration" loading="eager" decoding="async">
@@ -486,6 +503,18 @@ Good value for the location. Small room, very clean, and quiet after midnight.</
 <div id="v7MapPreview" class="v7-map-preview" hidden></div><div id="v7Status" class="v7-status" role="status" aria-live="polite">Choose a destination and search.</div><div id="v7Results" class="v7-results"></div>
 <p class="v7-note">Map records © OpenStreetMap contributors. Data coverage varies. Hours, accessibility, pet policies and availability are not independently verified. Confirm with the venue before visiting.</p>
 </section></div>
+
+<div class="br-modal-backdrop" id="br-how-modal" hidden>
+ <section class="br-modal" role="dialog" aria-modal="true" aria-labelledby="br-how-title" aria-describedby="br-how-copy">
+  <button type="button" class="br-modal-close" id="br-how-close" aria-label="Close">×</button>
+  <div class="br-modal-brand">bareroam <span>· YOUR WORLD. YOUR WAY.</span></div>
+  <h2 id="br-how-title">Your Journey Starts Here</h2>
+  <p class="br-modal-lead" id="br-how-lead">Choose your destination. Follow your curiosity.</p>
+  <p id="br-how-copy">Start by searching for a city or neighborhood. Explore places to stay, eat, shop, and experience. Discover hidden gems, compare your options, and save your favorites.</p>
+  <p id="br-how-finish">Make every journey uniquely yours.</p>
+  <button type="button" class="primary" id="br-how-start">Start exploring ↗</button>
+ </section>
+</div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 /* Set your Cloudflare Worker URL once with ?map_api=https://YOUR-WORKER.workers.dev */
@@ -2647,7 +2676,7 @@ document.getElementById('generate').addEventListener('click',()=>{renderPlan();s
 });
 document.getElementById('analyze').addEventListener('click',analyzeReviews);
 document.getElementById('startBtn').addEventListener('click',()=>document.getElementById('planner').scrollIntoView({behavior:'smooth'}));
-document.getElementById('howBtn').addEventListener('click',()=>{document.getElementById('sources').scrollIntoView({behavior:'smooth'});showToast('Tripwise separates recommendations from verified data.');});
+document.getElementById('howBtn').addEventListener('click',()=>window.bareroamOpenHow());
 function collectPreferences() {
   return {
     version:2,
@@ -2964,6 +2993,52 @@ $('v7Search').addEventListener('click',search);$('v7More').addEventListener('cli
  function show(i){current=(i+slides.length)%slides.length;slides.forEach((s,n)=>s.classList.toggle('is-active',n===current));dots.forEach((d,n)=>{d.classList.toggle('is-active',n===current);d.setAttribute('aria-pressed',String(n===current));});}
  dots.forEach((dot,i)=>dot.addEventListener('click',()=>show(i)));
  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){setInterval(()=>{if(!document.hidden)show(current+1);},5500);}
+})();
+</script>
+
+<script>
+/* Bareroam V13: curated, meaning-first translations for core navigation, hero and onboarding.
+   Do not translate names, IDs, map provider results, or user-supplied content. */
+(function(){
+const I18N={
+ en:{hero:'Discover inspiring destinations, explore hidden gems, and create travel experiences that feel uniquely yours — all in one place.',sign:'Less scrolling. More being there.',howTitle:'Your Journey Starts Here',howLead:'Choose your destination. Follow your curiosity.',howCopy:'Start by searching for a city or neighborhood. Explore places to stay, eat, shop, and experience. Discover hidden gems, compare your options, and save your favorites.',howFinish:'Make every journey uniquely yours.',howStart:'Start exploring ↗',close:'Close',nav:['Explore','Plan a Trip','Compare','Travel Insights','Save trip brief ↓'],start:'Plan a trip ↘',how:'How it works',heading:'Start with your kind of trip',section:'01 / Make it yours',fields:['Destination','Trip length','Travellers','Budget style','Anything else?','Search radius','Or enter a neighbourhood','Find real places ↗','Explore this category ↗','Review text','Generate my sample plan ↗'],placeholder:['e.g. avoid long queues, vegetarian','e.g. Moda, Chelsea','e.g. coffee, art, boutique']},
+ de:{hero:'Entdecke inspirierende Reiseziele und verborgene Schätze. Gestalte Reiseerlebnisse, die wirklich zu dir passen – alles an einem Ort.',sign:'Weniger suchen. Mehr erleben.',howTitle:'Deine Reise beginnt hier',howLead:'Wähle dein Reiseziel. Folge deiner Neugier.',howCopy:'Suche zuerst nach einer Stadt oder einem Stadtviertel. Entdecke Unterkünfte, Restaurants, Geschäfte und besondere Erlebnisse. Finde Geheimtipps, vergleiche deine Möglichkeiten und speichere deine Favoriten.',howFinish:'Gestalte jede Reise ganz nach deinen Wünschen.',howStart:'Jetzt entdecken ↗',close:'Schließen',nav:['Entdecken','Reise planen','Vergleichen','Reisetipps','Reiseangaben speichern ↓'],start:'Reise planen ↘',how:'So funktioniert’s',heading:'Eine Reise, die zu dir passt',section:'01 / Ganz nach deinen Wünschen',fields:['Reiseziel','Reisedauer','Reisende','Budget','Sonstige Wünsche?','Suchradius','Oder Stadtviertel eingeben','Orte entdecken ↗','Kategorie entdecken ↗','Bewertungstext','Beispielreise erstellen ↗'],placeholder:['z. B. lange Warteschlangen vermeiden, vegetarisch','z. B. Moda, Chelsea','z. B. Kaffee, Kunst, Boutique']},
+ es:{hero:'Descubre destinos que inspiran, rincones especiales y experiencias de viaje hechas a tu medida, todo en un mismo lugar.',sign:'Menos búsquedas. Más momentos.',howTitle:'Tu viaje comienza aquí',howLead:'Elige tu destino. Déjate llevar por la curiosidad.',howCopy:'Empieza buscando una ciudad o un barrio. Explora dónde alojarte, comer, comprar y qué experiencias disfrutar. Descubre rincones especiales, compara opciones y guarda tus favoritos.',howFinish:'Haz que cada viaje sea verdaderamente tuyo.',howStart:'Empezar a explorar ↗',close:'Cerrar',nav:['Explorar','Planificar viaje','Comparar','Consejos de viaje','Guardar datos del viaje ↓'],start:'Planificar viaje ↘',how:'Cómo funciona',heading:'Un viaje a tu manera',section:'01 / A tu medida',fields:['Destino','Duración del viaje','Viajeros','Presupuesto','¿Algo más?','Radio de búsqueda','O escribe un barrio','Buscar lugares ↗','Explorar esta categoría ↗','Texto de reseñas','Crear itinerario de ejemplo ↗'],placeholder:['p. ej., evitar colas, comida vegetariana','p. ej., Moda, Chelsea','p. ej., café, arte, boutiques']},
+ tr:{hero:'İlham veren rotaları ve saklı güzellikleri keşfet. Tam sana göre seyahat deneyimlerini tek bir yerde şekillendir.',sign:'Daha az arama. Daha çok keşif.',howTitle:'Yolculuğun Burada Başlıyor',howLead:'Rotanı seç. Merakının peşinden git.',howCopy:'Bir şehir veya semt arayarak başla. Konaklama, yeme içme, alışveriş ve deneyim seçeneklerini keşfet. Saklı güzellikleri bul, alternatifleri karşılaştır ve beğendiğin yerleri kaydet.',howFinish:'Her yolculuğu kendine özgü kıl.',howStart:'Keşfetmeye başla ↗',close:'Kapat',nav:['Keşfet','Seyahat planla','Karşılaştır','Seyahat ipuçları','Seyahat bilgilerini kaydet ↓'],start:'Seyahat planla ↘',how:'Nasıl çalışır?',heading:'Sana uygun bir seyahatle başla',section:'01 / Sana özel',fields:['Gidilecek yer','Seyahat süresi','Yolcu sayısı','Bütçe tercihi','Başka bir isteğin var mı?','Arama yarıçapı','Veya bir semt yaz','Gerçek yerleri bul ↗','Bu kategoriyi keşfet ↗','Yorum metni','Örnek planımı oluştur ↗'],placeholder:['örn. uzun kuyruklardan kaçın, vejetaryen','örn. Moda, Chelsea','örn. kahve, sanat, butik']},
+ it:{hero:'Scopri destinazioni che ispirano, angoli nascosti ed esperienze di viaggio davvero su misura per te, tutto in un unico posto.',sign:'Meno ricerche. Più esperienze.',howTitle:'Il tuo viaggio inizia qui',howLead:'Scegli la tua destinazione. Lasciati guidare dalla curiosità.',howCopy:'Inizia cercando una città o un quartiere. Scopri dove soggiornare, mangiare, fare shopping e vivere nuove esperienze. Trova luoghi poco conosciuti, confronta le opzioni e salva i tuoi preferiti.',howFinish:'Rendi ogni viaggio davvero tuo.',howStart:'Inizia a esplorare ↗',close:'Chiudi',nav:['Esplora','Organizza un viaggio','Confronta','Consigli di viaggio','Salva i dettagli del viaggio ↓'],start:'Organizza un viaggio ↘',how:'Come funziona',heading:'Un viaggio su misura per te',section:'01 / Come piace a te',fields:['Destinazione','Durata del viaggio','Viaggiatori','Budget','Altre preferenze?','Raggio di ricerca','Oppure inserisci un quartiere','Trova luoghi ↗','Esplora questa categoria ↗','Testo delle recensioni','Crea un itinerario di esempio ↗'],placeholder:['es. evitare lunghe code, vegetariano','es. Moda, Chelsea','es. caffè, arte, boutique']},
+ fr:{hero:'Découvrez des destinations inspirantes, des trésors cachés et des expériences de voyage qui vous ressemblent, le tout au même endroit.',sign:'Moins de recherches. Plus de découvertes.',howTitle:'Votre voyage commence ici',howLead:'Choisissez votre destination. Laissez-vous guider par votre curiosité.',howCopy:'Commencez par rechercher une ville ou un quartier. Explorez les hébergements, les restaurants, les boutiques et les activités. Découvrez des adresses méconnues, comparez les options et enregistrez vos favoris.',howFinish:'Faites de chaque voyage une expérience qui vous ressemble.',howStart:'Commencer à explorer ↗',close:'Fermer',nav:['Explorer','Organiser un voyage','Comparer','Conseils de voyage','Enregistrer les détails ↓'],start:'Organiser un voyage ↘',how:'Comment ça marche',heading:'Un voyage à votre image',section:'01 / À votre façon',fields:['Destination','Durée du séjour','Voyageurs','Budget','Autres envies ?','Rayon de recherche','Ou saisir un quartier','Trouver des lieux ↗','Explorer cette catégorie ↗','Texte des avis','Créer un itinéraire exemple ↗'],placeholder:['ex. éviter les longues files, végétarien','ex. Moda, Chelsea','ex. café, art, boutique']}
+};
+const base=I18N.en;
+const map={};
+for(const [k,v] of Object.entries(base)){
+ if(typeof v==='string')map[v]=k;
+ else if(Array.isArray(v))v.forEach((item,i)=>map[item]=[k,i]);
+}
+const initialNodes=[];
+const walker=document.createTreeWalker(document.getElementById('app'),NodeFilter.SHOW_TEXT);
+while(walker.nextNode()){
+ const node=walker.currentNode; const key=node.nodeValue.trim();
+ if(map[key]!==undefined && !node.parentElement.closest('script,style,option'))initialNodes.push([node,map[key]]);
+}
+const initialPlaceholders=[...document.querySelectorAll('input[placeholder],textarea[placeholder]')].filter(el=>base.placeholder.includes(el.placeholder)).map(el=>[el,base.placeholder.indexOf(el.placeholder)]);
+const dialog=document.getElementById('br-how-modal'), selector=document.getElementById('br-language');
+function apply(lang){
+ const t=I18N[lang]||base; document.documentElement.lang=lang;
+ initialNodes.forEach(([node,key])=>{const value=Array.isArray(key)?t[key[0]][key[1]]:t[key];if(value)node.nodeValue=node.nodeValue.replace(node.nodeValue.trim(),value);});
+ initialPlaceholders.forEach(([el,i])=>el.placeholder=t.placeholder[i]);
+ for(const [id,key] of [['br-how-title','howTitle'],['br-how-lead','howLead'],['br-how-copy','howCopy'],['br-how-finish','howFinish'],['br-how-start','howStart']])document.getElementById(id).textContent=t[key];
+ document.getElementById('br-how-close').setAttribute('aria-label',t.close);
+ selector.value=lang;try{localStorage.setItem('bareroam-language',lang)}catch(e){}
+}
+selector.addEventListener('change',()=>apply(selector.value));
+const closeBtn=document.getElementById('br-how-close');let lastFocus=null;
+function close(){dialog.hidden=true;document.body.style.overflow='';(lastFocus||document.getElementById('howBtn')).focus();}
+window.bareroamOpenHow=function(){lastFocus=document.activeElement;dialog.hidden=false;document.body.style.overflow='hidden';closeBtn.focus();};
+closeBtn.addEventListener('click',close);
+dialog.addEventListener('click',e=>{if(e.target===dialog)close();});
+document.addEventListener('keydown',e=>{if(dialog.hidden)return;if(e.key==='Escape')close();if(e.key==='Tab'){const els=[...dialog.querySelectorAll('button:not([disabled])')];const first=els[0],last=els[els.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
+document.getElementById('br-how-start').addEventListener('click',()=>{close();document.getElementById('realPlaces')?.scrollIntoView({behavior:'smooth'});});
+let saved='en';try{saved=localStorage.getItem('bareroam-language')||'en'}catch(e){}if(!I18N[saved])saved='en';apply(saved);
 })();
 </script>
 </body>
