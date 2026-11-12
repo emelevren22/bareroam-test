@@ -3072,5 +3072,39 @@ brObs.observe(document.getElementById('app'),{childList:true,subtree:true,charac
 brTranslateAll(selector.value);
 })();
 </script>
+<!-- Ask Bareroam: guided beta, no generative AI or external chat service -->
+<style>
+#br-chat-launch{position:fixed;right:22px;bottom:22px;z-index:11000;border:0;border-radius:50px;background:#174f46;color:white;box-shadow:0 8px 28px #102d2750;padding:14px 18px;font-weight:750;display:flex;gap:9px;align-items:center}
+#br-chat-panel{position:fixed;right:22px;bottom:84px;width:min(385px,calc(100vw - 30px));height:min(530px,calc(100dvh - 110px));z-index:11001;background:#fffefa;color:#193f37;border:1px solid #dce3da;border-radius:20px;box-shadow:0 18px 60px #112f2950;display:none;flex-direction:column;overflow:hidden;font:14px/1.5 Inter,system-ui,sans-serif}
+#br-chat-panel.br-open{display:flex}#br-chat-head{padding:17px 18px;background:#174f46;color:white;display:flex;justify-content:space-between;align-items:center}#br-chat-head strong{font-size:16px}#br-chat-close{border:0;background:transparent;color:white;font-size:26px;line-height:1;cursor:pointer}#br-chat-feed{padding:17px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:10px} .br-chat-bubble{padding:10px 13px;border-radius:15px;max-width:90%;background:#eef3eb;align-self:flex-start;white-space:pre-wrap}.br-chat-bubble.br-me{background:#174f46;color:white;align-self:flex-end}#br-chat-actions{padding:8px 14px;display:flex;gap:6px;flex-wrap:wrap}#br-chat-actions button{border:1px solid #cbd9ce;background:white;color:#174f46;border-radius:99px;padding:6px 9px;font-size:12px}#br-chat-form{display:flex;padding:12px;gap:8px;border-top:1px solid #dce3da}#br-chat-input{flex:1;min-width:0;border:1px solid #cbd9ce;border-radius:11px;padding:10px}#br-chat-send{border:0;border-radius:11px;background:#174f46;color:white;padding:10px 13px;font-weight:700}#br-chat-note{padding:0 15px 12px;font-size:11px;color:#60756a}
+@media(max-width:550px){#br-chat-launch{right:14px;bottom:14px}#br-chat-panel{right:10px;bottom:76px}}
+</style>
+<button id="br-chat-launch" type="button" aria-controls="br-chat-panel" aria-expanded="false">✦ <span>Ask Bareroam</span></button>
+<section id="br-chat-panel" role="dialog" aria-modal="false" aria-label="Ask Bareroam" aria-hidden="true">
+ <div id="br-chat-head"><strong>✦ Ask Bareroam <small style="font-weight:400;opacity:.8">· Beta</small></strong><button id="br-chat-close" type="button" aria-label="Close">×</button></div>
+ <div id="br-chat-feed" role="log" aria-live="polite"></div><div id="br-chat-actions"></div>
+ <form id="br-chat-form"><input id="br-chat-input" maxlength="400" autocomplete="off" aria-label="Your question" placeholder="Where would you like to go?"><button id="br-chat-send" type="submit">➤</button></form>
+ <div id="br-chat-note"></div>
+</section>
+<script>
+(()=>{
+const $=id=>document.getElementById(id), panel=$('br-chat-panel'),launch=$('br-chat-launch'),feed=$('br-chat-feed'),actions=$('br-chat-actions'),input=$('br-chat-input');
+const dict={
+en:['Hi! I can help you find the right Bareroam section. What would you like to do?','Explore places','Plan a trip','Compare options','This is a guided beta, not a live AI chat. Place details and opening hours need verification.','Tell me whether you want to explore, plan or compare.','Ask Bareroam','Type your question','Send'],
+tr:['Merhaba! Bareroam’da doğru bölüme ulaşmana yardımcı olabilirim. Ne yapmak istersin?','Yerleri keşfet','Seyahat planla','Seçenekleri karşılaştır','Bu yönlendirmeli bir beta sürümüdür; canlı yapay zekâ sohbeti değildir. Mekân bilgilerini ve saatlerini doğrula.','Keşfetmek, plan yapmak veya karşılaştırmak istediğini yazabilirsin.','Bareroam’a Sor','Sorunu yaz','Gönder'],
+de:['Hallo! Ich helfe dir, den passenden Bereich von Bareroam zu finden. Was möchtest du tun?','Orte entdecken','Reise planen','Optionen vergleichen','Dies ist eine geführte Beta, kein Live-KI-Chat. Öffnungszeiten und Ortsangaben bitte prüfen.','Möchtest du entdecken, planen oder vergleichen?','Bareroam fragen','Deine Frage','Senden'],
+es:['¡Hola! Puedo ayudarte a encontrar la sección adecuada de Bareroam. ¿Qué te gustaría hacer?','Explorar lugares','Planear un viaje','Comparar opciones','Esta es una versión beta guiada, no un chat de IA en vivo. Comprueba los datos y horarios.','¿Quieres explorar, planear o comparar?','Pregunta a Bareroam','Escribe tu pregunta','Enviar'],
+it:['Ciao! Posso aiutarti a trovare la sezione giusta di Bareroam. Cosa vuoi fare?','Esplora luoghi','Organizza un viaggio','Confronta le opzioni','Questa è una versione beta guidata, non una chat IA dal vivo. Verifica luoghi e orari.','Vuoi esplorare, organizzare o confrontare?','Chiedi a Bareroam','Scrivi la domanda','Invia'],
+fr:['Bonjour ! Je peux vous aider à trouver la bonne rubrique de Bareroam. Que souhaitez-vous faire ?','Explorer des lieux','Préparer un voyage','Comparer les options','Ceci est une version bêta guidée, pas un chat IA en direct. Vérifiez les lieux et les horaires.','Souhaitez-vous explorer, préparer ou comparer ?','Demander à Bareroam','Votre question','Envoyer']};
+let started=false;function lang(){return dict[$('br-language')?.value]?$ ('br-language').value:'en'}function strings(){return dict[lang()]}
+function bubble(t,me=false){const el=document.createElement('div');el.className='br-chat-bubble'+(me?' br-me':'');el.textContent=t;feed.appendChild(el);feed.scrollTop=feed.scrollHeight}
+function render(){const s=strings();$('br-chat-note').textContent=s[4];input.placeholder=s[7];$('br-chat-send').title=s[8];actions.replaceChildren();[1,2,3].forEach((i)=>{const b=document.createElement('button');b.type='button';b.textContent=s[i];b.onclick=()=>route(i);actions.appendChild(b)});if(!started){bubble(s[0]);started=true}}
+function open(){panel.classList.add('br-open');panel.setAttribute('aria-hidden','false');launch.setAttribute('aria-expanded','true');render();input.focus()}
+function close(){panel.classList.remove('br-open');panel.setAttribute('aria-hidden','true');launch.setAttribute('aria-expanded','false');launch.focus()}
+function route(n){const s=strings();bubble(s[n],true);let target=n===1?document.getElementById('explorerDestination'):document.getElementById('planner');if(n===3){const cmp=document.getElementById('compareNav');if(cmp)cmp.click();target=document.getElementById('comparePanel')||target}close();if(target){target.scrollIntoView({behavior:'smooth',block:'center'});if(n===1&&target.focus)target.focus({preventScroll:true})}}
+launch.onclick=()=>panel.classList.contains('br-open')?close():open();$('br-chat-close').onclick=close();document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('br-open'))close()});$('br-language')?.addEventListener('change',()=>{if(started){render();bubble(strings()[0])}});
+$('br-chat-form').addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim();if(!v)return;bubble(v,true);input.value='';const q=v.toLowerCase();let n=0;if(/explor|keş|gez|discover|entdeck|esplor|découvr|restaurant|hotel|otel|kafe|café|museum|müze/.test(q))n=1;else if(/plan|rota|trip|reise|viaje|viaggio|voyage|seyahat|itinér/.test(q))n=2;else if(/compar|karşı|vergleich|confront|vergle/.test(q))n=3;if(n){bubble(strings()[n]+' ↓');setTimeout(()=>route(n),350)}else bubble(strings()[5]);});
+})();
+</script>
 </body>
 </html>
