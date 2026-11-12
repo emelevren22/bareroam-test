@@ -3101,12 +3101,19 @@ function bubble(t,me=false){const el=document.createElement('div');el.className=
 function render(){const s=strings();$('br-chat-note').textContent=s[4];input.placeholder=s[7];$('br-chat-send').title=s[8];actions.replaceChildren();[1,2,3].forEach((i)=>{const b=document.createElement('button');b.type='button';b.textContent=s[i];b.onclick=()=>route(i);actions.appendChild(b)});if(!started){bubble(s[0]);started=true}}
 function open(){panel.style.display='flex';panel.classList.add('br-open');panel.setAttribute('aria-hidden','false');launch.setAttribute('aria-expanded','true');render();input.focus()}
 function closeChat(){panel.classList.remove('br-open');panel.style.display='none';panel.setAttribute('aria-hidden','true');launch.setAttribute('aria-expanded','false');launch.focus()}
-function route(n){const s=strings();bubble(s[n],true);closeChat();if(window.bareroamOpenView){window.bareroamOpenView(n===1?'explore':n===2?'plan':'compare');}}
+function route(n){
+ const s=strings();bubble(s[n],true);
+ const replies={en:['Choose a destination, then open a category to find mapped places.','Set your dates, interests and budget. Save real places from Explore to build your trip.','Save places first, then compare your options.'],tr:['Önce bir şehir seç. Ardından kategori açarak haritadaki gerçek yerleri keşfet.','Tarihlerini, ilgi alanlarını ve bütçeni seç. Gerçek yerleri Keşfet bölümünden listene ekle.','Önce yerleri listene kaydet; ardından seçenekleri karşılaştır.'],de:['Wähle ein Reiseziel und eine Kategorie, um Orte auf der Karte zu finden.','Wähle Daten, Interessen und Budget. Speichere echte Orte aus Entdecken.','Speichere Orte und vergleiche dann deine Optionen.'],es:['Elige un destino y una categoría para encontrar lugares en el mapa.','Elige fechas, intereses y presupuesto. Guarda lugares reales desde Explorar.','Guarda lugares y después compara tus opciones.'],it:['Scegli una destinazione e una categoria per trovare luoghi sulla mappa.','Scegli date, interessi e budget. Salva luoghi reali da Esplora.','Salva i luoghi e poi confronta le opzioni.'],fr:['Choisissez une destination et une catégorie pour trouver des lieux sur la carte.','Choisissez dates, envies et budget. Enregistrez des lieux réels depuis Explorer.','Enregistrez des lieux, puis comparez vos options.']};
+ bubble((replies[lang()]||replies.en)[n-1]);
+ const labels={en:'Open section',tr:'Bölümü aç',de:'Bereich öffnen',es:'Abrir sección',it:'Apri sezione',fr:'Ouvrir la rubrique'};
+ const b=document.createElement('button');b.type='button';b.className='br-chat-open-section';b.textContent=labels[lang()]||labels.en;
+ b.addEventListener('click',()=>{closeChat();window.bareroamOpenView?.(n===1?'explore':n===2?'plan':'compare')});feed.appendChild(b);feed.scrollTop=feed.scrollHeight;
+}
 launch.addEventListener('click',()=>panel.classList.contains('br-open')?closeChat():open());
 $('br-chat-close').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();closeChat()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('br-open'))closeChat()});
 $('br-language')?.addEventListener('change',()=>{if(started){render();bubble(strings()[0])}});
-$('br-chat-form').addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim();if(!v)return;bubble(v,true);input.value='';const q=v.toLowerCase();let n=0;if(/explor|keş|gez|discover|entdeck|esplor|découvr|restaurant|hotel|otel|kafe|café|museum|müze/.test(q))n=1;else if(/plan|rota|trip|reise|viaje|viaggio|voyage|seyahat|itinér/.test(q))n=2;else if(/compar|karşı|vergleich|confront|vergle/.test(q))n=3;if(n){bubble(strings()[n]+' ↓');setTimeout(()=>route(n),350)}else bubble(strings()[5]);});
+$('br-chat-form').addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim();if(!v)return;bubble(v,true);input.value='';const q=v.toLowerCase();let n=0;if(/explor|keş|gez|discover|entdeck|esplor|découvr|restaurant|hotel|otel|kafe|café|museum|müze/.test(q))n=1;else if(/plan|rota|trip|reise|viaje|viaggio|voyage|seyahat|itinér/.test(q))n=2;else if(/compar|karşı|vergleich|confront|vergle/.test(q))n=3;if(n){route(n)}else bubble(strings()[5]);});
 })();
 </script>
 
@@ -3133,7 +3140,7 @@ const keys=['explore','plan','compare','insights'];
 let current=null;
 function words(){return names[document.getElementById('br-language')?.value]||names.en}
 function update(){const w=words();document.getElementById('br-screen-home').textContent='← '+w[0];document.getElementById('br-screen-title').textContent=current?w[keys.indexOf(current)+1]:''}
-function show(view){if(!keys.includes(view))return;keys.forEach(k=>body.classList.remove('br-screen-'+k));current=view;body.classList.add('br-screen-active','br-screen-'+view);update();window.scrollTo(0,0);}
+function show(view){if(!keys.includes(view))return;keys.forEach(k=>body.classList.remove('br-screen-'+k));current=view;body.classList.add('br-screen-active','br-screen-'+view);update();if(view==='compare')document.querySelector('[data-tab="compare"]')?.click();if(view==='plan')document.querySelector('[data-tab="plan"]')?.click();window.scrollTo(0,0);}
 function home(){current=null;body.classList.remove('br-screen-active');keys.forEach(k=>body.classList.remove('br-screen-'+k));window.scrollTo(0,0)}
 window.bareroamOpenView=show;
 document.getElementById('br-screen-home').addEventListener('click',home);
@@ -3144,6 +3151,69 @@ document.querySelectorAll('#app header nav a, #app .nav a').forEach(a=>{
 });
 document.querySelectorAll('a.brand-link').forEach(a=>a.addEventListener('click',e=>{if(current){e.preventDefault();e.stopImmediatePropagation();home()}},true));
 document.getElementById('br-language')?.addEventListener('change',update);
+})();
+</script>
+<!-- Bareroam V13.5: contained functional fixes, without altering the homepage or assets -->
+<style id="br-v135-css">
+.br-chat-open-section{align-self:flex-start;margin:8px 14px 12px;border:1px solid #bfd2c6;border-radius:22px;background:#eaf2eb;color:#174f46;padding:10px 16px;cursor:pointer;font-weight:650}
+#br-chat-panel{max-height:min(650px,85vh)}
+#br-chat-feed{overflow-y:auto;min-height:0;overscroll-behavior:contain}
+#br-rental-search{display:none;margin:12px 0 0;padding:12px 16px;border:1px solid #cddbd0;border-radius:12px;background:#f1f6ef;color:#174f46;text-decoration:none;font-weight:650}
+#br-rental-search.br-visible{display:inline-block}
+#br-plan-disclosure{padding:14px 18px;border:1px solid #dfcfa8;border-radius:14px;background:#fff7e9;color:#65491b;margin:12px 0;font-size:14px}
+</style>
+<script id="br-v135-js">
+(()=>{
+ const $=id=>document.getElementById(id), language=()=> $('br-language')?.value||'en';
+ const translations={
+ 'Things to Do':['Gezilecek Yerler ve Aktiviteler','Sehenswürdigkeiten & Aktivitäten','Lugares y actividades','Luoghi e attività','Lieux et activités'],
+ 'Food & Dining':['Yeme & İçme','Essen & Trinken','Comida y bebida','Cibo e ristoranti','Restaurants et cafés'],
+ 'Stays':['Konaklama','Unterkünfte','Alojamientos','Alloggi','Hébergements'],
+ 'Flights':['Uçuşlar','Flüge','Vuelos','Voli','Vols'],
+ 'Shopping':['Alışveriş','Shopping','Compras','Shopping','Shopping'],
+ 'Family Travel':['Aile Seyahati','Familienreisen','Viajes en familia','Viaggi in famiglia','Voyages en famille'],
+ 'Pet Travel':['Evcil Hayvanla Seyahat','Reisen mit Haustieren','Viajes con mascotas','Viaggi con animali','Voyages avec animaux'],
+ 'Health & Care':['Sağlık ve Bakım','Gesundheit & Versorgung','Salud y cuidados','Salute e assistenza','Santé et soins'],
+ 'Destination':['Gidilecek yer','Reiseziel','Destino','Destinazione','Destination'],
+ 'Area / neighbourhood (optional)':['Bölge / semt (isteğe bağlı)','Gebiet / Stadtviertel (optional)','Zona / barrio (opcional)','Zona / quartiere (facoltativo)','Zone / quartier (facultatif)'],
+ 'Search radius':['Arama yarıçapı','Suchradius','Radio de búsqueda','Raggio di ricerca','Rayon de recherche'],
+ 'What are you looking for?':['Ne arıyorsun?','Was suchst du?','¿Qué estás buscando?','Che cosa cerchi?','Que recherchez-vous ?'],
+ 'Filter results by name':['Sonuçları ada göre filtrele','Ergebnisse nach Namen filtern','Filtrar por nombre','Filtra per nome','Filtrer par nom'],
+ 'Attractions & landmarks':['Gezilecek yerler ve simge yapılar','Sehenswürdigkeiten','Atracciones y monumentos','Attrazioni e monumenti','Sites et monuments'],
+ 'Restaurants':['Restoranlar','Restaurants','Restaurantes','Ristoranti','Restaurants'],
+ 'Hotels':['Oteller','Hotels','Hoteles','Hotel','Hôtels'],
+ 'Apartments':['Daireler','Ferienwohnungen','Apartamentos','Appartamenti','Appartements'],
+ 'All accommodation':['Tüm konaklamalar','Alle Unterkünfte','Todos los alojamientos','Tutti gli alloggi','Tous les hébergements'],
+ 'Select a place type and press Find.':['Bir yer türü seç ve Ara butonuna bas.','Wähle einen Ortstyp und starte die Suche.','Elige un tipo de lugar y busca.','Scegli un tipo di luogo e cerca.','Choisissez un type de lieu et lancez la recherche.'],
+ 'Find things to do ↗':['Gezilecek yerleri bul ↗','Aktivitäten finden ↗','Buscar actividades ↗','Trova attività ↗','Trouver des activités ↗'],
+ 'Find food & dining ↗':['Yeme içme yerlerini bul ↗','Restaurants finden ↗','Buscar restaurantes ↗','Trova ristoranti ↗','Trouver des restaurants ↗'],
+ 'Explore landmarks, museums, galleries and attractions.':['Simge yapıları, müzeleri, galerileri ve gezilecek yerleri keşfet.','Entdecke Sehenswürdigkeiten, Museen und Galerien.','Descubre monumentos, museos y galerías.','Scopri monumenti, musei e gallerie.','Découvrez monuments, musées et galeries.'],
+ 'Find places to eat and drink. Menus, prices and hours must be checked.':['Yeme içme mekânlarını keşfet. Menüleri, fiyatları ve saatleri ayrıca doğrula.','Entdecke Restaurants und Cafés. Prüfe Speisekarten, Preise und Öffnungszeiten.','Descubre dónde comer y beber. Comprueba menús, precios y horarios.','Scopri dove mangiare e bere. Verifica menu, prezzi e orari.','Découvrez où manger et boire. Vérifiez menus, prix et horaires.'],
+ 'Map records © OpenStreetMap contributors. Data coverage varies. Hours, accessibility, pet policies and availability are not independently verified. Confirm with the venue before visiting.':['Harita verileri © OpenStreetMap katkıda bulunanları. Kapsam değişebilir. Saatleri, erişilebilirliği, evcil hayvan kurallarını ve müsaitliği işletmeden doğrulayın.','Kartendaten © OpenStreetMap-Mitwirkende. Öffnungszeiten, Barrierefreiheit, Haustierregeln und Verfügbarkeit bitte vor Ort prüfen.','Datos cartográficos © colaboradores de OpenStreetMap. Verifica horarios, accesibilidad, mascotas y disponibilidad antes de visitar.','Dati mappa © collaboratori OpenStreetMap. Verifica orari, accessibilità, animali e disponibilità con la struttura.','Données cartographiques © contributeurs OpenStreetMap. Vérifiez horaires, accessibilité, animaux et disponibilité auprès du lieu.'],
+ 'YOUR PERSONALIZED TRIP BRIEF':['KİŞİSEL SEYAHAT ÖZETİN','DEIN PERSÖNLICHER REISEPLAN','TU RESUMEN DE VIAJE','IL TUO RIEPILOGO DI VIAGGIO','VOTRE RÉCAPITULATIF DE VOYAGE'],
+ 'TRAVELLERS':['YOLCULAR','REISENDE','VIAJEROS','VIAGGIATORI','VOYAGEURS'],
+ 'BUDGET STYLE':['BÜTÇE TÜRÜ','BUDGET','PRESUPUESTO','BUDGET','BUDGET'],
+ 'TRIP DATES':['SEYAHAT TARİHLERİ','REISEDATEN','FECHAS DEL VIAJE','DATE DEL VIAGGIO','DATES DU VOYAGE'],
+ 'Download itinerary (.md) ↓':['Gezi planını indir (.md) ↓','Reiseplan herunterladen (.md) ↓','Descargar itinerario (.md) ↓','Scarica itinerario (.md) ↓','Télécharger le programme (.md) ↓'],
+ 'Print / Save as PDF ↗':['Yazdır / PDF kaydet ↗','Drucken / als PDF speichern ↗','Imprimir / guardar PDF ↗','Stampa / salva PDF ↗','Imprimer / enregistrer PDF ↗']
+ };
+ const codes=['tr','de','es','it','fr'];const idx=()=>codes.indexOf(language());
+ const original=new WeakMap();const watchedIds=['v7Overlay','tripDetails','planTitle','planSubtitle','itinerary','v7Results'];
+ function translateText(node){if(node.nodeType!==3)return;const raw=node.nodeValue;const val=raw.trim();if(!val)return;let en=original.get(node);if(!en){if(!translations[val])return;en=val;original.set(node,en)}const n=idx();const next=n<0?en:translations[en][n];if(val!==next)node.nodeValue=raw.replace(val,next)}
+ function translate(root){if(!root)return;const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=walk.nextNode())translateText(n);}
+ let busy=false;function refresh(){if(busy)return;busy=true;try{translate($('v7Overlay'));translate($('tripDetails'));translate($('planTitle'));translate($('planSubtitle'));translate($('itinerary'));translate($('v7Results'));syncRental();syncPlanNotice()}finally{busy=false}}
+ const mo=new MutationObserver(()=>{if(!busy)queueMicrotask(refresh)});
+ ['v7Overlay','tripDetails','planTitle','planSubtitle','itinerary'].forEach(id=>{const el=$(id);if(el)mo.observe(el,{childList:true,subtree:true,characterData:true})});
+ $('br-language')?.addEventListener('change',()=>setTimeout(refresh,40));
+ // Short-term rentals are not reliably indexed as Airbnb listings in OpenStreetMap. Offer an honest external search instead.
+ const rental=document.createElement('a');rental.id='br-rental-search';rental.target='_blank';rental.rel='noopener noreferrer';
+ $('v12Stay')?.appendChild(rental);
+ function syncRental(){if(!rental.isConnected)return;const isStay=$('v12Stay')&&!$('v12Stay').classList.contains('hidden');rental.classList.toggle('br-visible',!!isStay);const names={en:'Search Airbnb & short-term rentals ↗',tr:'Airbnb ve kısa süreli kiralık evleri ara ↗',de:'Airbnb & Ferienwohnungen suchen ↗',es:'Buscar Airbnb y alquileres temporales ↗',it:'Cerca Airbnb e affitti brevi ↗',fr:'Rechercher Airbnb et locations de courte durée ↗'};rental.textContent=names[language()]||names.en;const city=$('v7City')?.selectedOptions?.[0]?.textContent||$('destination')?.value||'';rental.href='https://www.airbnb.com/s/'+encodeURIComponent(city)+'/homes';}
+ $('v7City')?.addEventListener('change',syncRental);
+ // A demonstration is never presented as verified place-specific itinerary.
+ const notice=document.createElement('div');notice.id='br-plan-disclosure';$('planTitle')?.parentElement?.appendChild(notice);
+ function syncPlanNotice(){if(!notice.isConnected)return;const msg={en:'This itinerary is a sample template, not a verified route. To plan with real locations, explore mapped places and save them to your shortlist. Opening hours and travel times must be checked.',tr:'Bu program doğrulanmış bir rota değil, örnek şablondur. Gerçek mekânlarla planlamak için haritadaki yerleri keşfedip listene kaydet. Açılış saatlerini ve ulaşım sürelerini doğrula.',de:'Dieser Reiseplan ist nur ein Muster, keine geprüfte Route. Entdecke echte Orte auf der Karte und speichere sie in deiner Liste. Prüfe Öffnungszeiten und Wegezeiten.',es:'Este itinerario es una plantilla, no una ruta verificada. Explora lugares reales en el mapa y guárdalos. Comprueba horarios y desplazamientos.',it:'Questo itinerario è un modello, non un percorso verificato. Esplora luoghi reali sulla mappa e salvali. Verifica orari e tempi di viaggio.',fr:'Ce programme est un exemple, pas un itinéraire vérifié. Explorez les lieux sur la carte et enregistrez-les. Vérifiez horaires et trajets.'};notice.textContent=msg[language()]||msg.en;}
+ refresh();
 })();
 </script>
 </body>
