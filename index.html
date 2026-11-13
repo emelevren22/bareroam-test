@@ -3216,5 +3216,63 @@ document.getElementById('br-language')?.addEventListener('change',update);
  refresh();
 })();
 </script>
+<!-- Bareroam: directions with configurable departure point; independent of map API. -->
+<style>
+.br-directions{margin-top:11px;padding-top:10px;border-top:1px solid #dce3da}
+.br-directions-title{font-size:12px;font-weight:750;color:#174f46;margin-bottom:7px}
+.br-directions-options{display:flex;flex-wrap:wrap;gap:6px}
+.br-directions-options button{border:1px solid #b9cfc1;border-radius:9px;background:#edf4ed;color:#174f46;padding:8px 9px;font:700 12px inherit;cursor:pointer;min-height:36px}
+.br-directions-options button:hover,.br-directions-options button:focus-visible{background:#dcebe0;outline-offset:2px}
+.br-route-shade{position:fixed;inset:0;background:#102f29a8;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:18px}
+.br-route-dialog{background:#faf9f3;color:#174f46;border-radius:20px;width:min(460px,100%);padding:24px;box-shadow:0 18px 60px #0003;font-family:inherit}
+.br-route-dialog h2{font-size:23px;margin:0 0 10px;color:#174f46}.br-route-dialog label{display:block;margin:15px 0 6px;font-weight:700}
+.br-route-dialog select,.br-route-dialog input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #b9cfc1;border-radius:10px;font:inherit;background:white;color:#173f36}
+.br-route-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.br-route-actions button{border:1px solid #b9cfc1;border-radius:10px;padding:11px 16px;cursor:pointer;font:inherit}
+.br-route-go{background:#174f46;color:white;border-color:#174f46!important}
+.br-route-error{color:#a52222;font-size:13px;margin-top:8px;min-height:18px}
+</style>
+<script>
+(function(){
+ 'use strict';
+ const words={
+  en:['Get directions','Walking','Driving','Transit','Where are you leaving from?','Your current location','Hotel / accommodation','Another address','Enter hotel or accommodation address','Enter starting address','Cancel','Open directions','Please enter a starting address.','Google Maps will calculate the route.'],
+  tr:['Yol tarifi','Yürüyerek','Arabayla','Toplu taşıma','Nereden yola çıkacaksın?','Bulunduğum konum','Otelim / konaklamam','Başka bir adres','Otel veya konaklama adresini yaz','Başlangıç adresini yaz','Vazgeç','Yol tarifini aç','Lütfen başlangıç adresini yaz.','Rotayı Google Maps hesaplayacak.'],
+  de:['Route planen','Zu Fuß','Auto','ÖPNV','Wo startest du?','Mein Standort','Hotel / Unterkunft','Andere Adresse','Hoteladresse eingeben','Startadresse eingeben','Abbrechen','Route öffnen','Bitte Startadresse eingeben.','Google Maps berechnet die Route.'],
+  es:['Cómo llegar','A pie','En coche','Transporte público','¿Desde dónde sales?','Mi ubicación','Hotel / alojamiento','Otra dirección','Dirección del alojamiento','Dirección de salida','Cancelar','Abrir ruta','Introduce una dirección de salida.','Google Maps calculará la ruta.'],
+  it:['Indicazioni','A piedi','In auto','Mezzi pubblici','Da dove parti?','La mia posizione','Hotel / alloggio','Altro indirizzo','Indirizzo dell’alloggio','Indirizzo di partenza','Annulla','Apri indicazioni','Inserisci un indirizzo di partenza.','Google Maps calcolerà il percorso.'],
+  fr:['Itinéraire','À pied','En voiture','Transports','D’où partez-vous ?','Ma position','Hôtel / hébergement','Autre adresse','Adresse de l’hébergement','Adresse de départ','Annuler','Ouvrir l’itinéraire','Saisissez une adresse de départ.','Google Maps calculera le trajet.']
+ };
+ function language(){const v=document.getElementById('brLanguage')?.value||document.querySelector('.br-lang-wrap select')?.value||document.documentElement.lang||'en';return words[String(v).toLowerCase().slice(0,2)]?String(v).toLowerCase().slice(0,2):'en'}
+ function coords(card){for(const a of card.querySelectorAll('a[href*="openstreetmap.org"]')){try{const u=new URL(a.href);if(!u.searchParams.has('mlat')||!u.searchParams.has('mlon'))continue;const lat=Number(u.searchParams.get('mlat')),lon=Number(u.searchParams.get('mlon'));if(Number.isFinite(lat)&&Number.isFinite(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180)return [lat,lon]}catch(e){}}return null}
+ function routeDialog(lat,lon,mode){
+  const w=words[language()];document.querySelector('.br-route-shade')?.remove();
+  const shade=document.createElement('div');shade.className='br-route-shade';
+  const dialog=document.createElement('section');dialog.className='br-route-dialog';dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');
+  const title=document.createElement('h2');title.textContent=w[4];
+  const label=document.createElement('label');label.textContent=w[4];
+  const select=document.createElement('select');[['current',w[5]],['hotel',w[6]],['other',w[7]]].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;select.append(o)});
+  const address=document.createElement('input');address.type='text';address.autocomplete='street-address';address.style.display='none';
+  const note=document.createElement('p');note.style.fontSize='13px';note.textContent=w[13];
+  const error=document.createElement('div');error.className='br-route-error';error.setAttribute('role','alert');
+  const actions=document.createElement('div');actions.className='br-route-actions';
+  const cancel=document.createElement('button');cancel.type='button';cancel.textContent=w[10];
+  const go=document.createElement('button');go.type='button';go.className='br-route-go';go.textContent=w[11];
+  const close=()=>{shade.remove();document.removeEventListener('keydown',onKey)};
+  function onKey(e){if(e.key==='Escape')close()}
+  select.addEventListener('change',()=>{address.style.display=select.value==='current'?'none':'block';address.placeholder=select.value==='hotel'?w[8]:w[9];error.textContent='';if(select.value!=='current')address.focus()});
+  cancel.addEventListener('click',close);shade.addEventListener('click',e=>{if(e.target===shade)close()});
+  go.addEventListener('click',()=>{const origin=address.value.trim();if(select.value!=='current'&&!origin){error.textContent=w[12];address.focus();return}
+   const u=new URL('https://www.google.com/maps/dir/');u.searchParams.set('api','1');u.searchParams.set('destination',lat+','+lon);u.searchParams.set('travelmode',mode);if(select.value!=='current')u.searchParams.set('origin',origin);
+   const opened=window.open(u.toString(),'_blank','noopener,noreferrer');if(!opened){const a=document.createElement('a');a.href=u.toString();a.target='_blank';a.rel='noopener noreferrer';a.click()}close();
+  });
+  actions.append(cancel,go);dialog.append(title,label,select,address,note,error,actions);shade.append(dialog);document.body.append(shade);document.addEventListener('keydown',onKey);select.focus();
+ }
+ function add(card){if(card.querySelector('.br-directions'))return;const point=coords(card);if(!point)return;const [lat,lon]=point,w=words[language()];const box=document.createElement('div');box.className='br-directions';const title=document.createElement('div');title.className='br-directions-title';title.textContent='📍 '+w[0];const opts=document.createElement('div');opts.className='br-directions-options';[['walking','🚶',1],['driving','🚗',2],['transit','🚆',3]].forEach(([mode,emoji,i])=>{const b=document.createElement('button');b.type='button';b.textContent=emoji+' '+w[i];b.addEventListener('click',()=>routeDialog(lat,lon,mode));opts.append(b)});box.append(title,opts);card.append(box)}
+ function refresh(){document.querySelectorAll('.v7-result,.place-card').forEach(add)}
+ let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;refresh()})}).observe(document.body,{childList:true,subtree:true});refresh();
+ document.querySelector('.br-lang-wrap select')?.addEventListener('change',()=>{document.querySelectorAll('.br-directions').forEach(n=>n.remove());refresh()});
+})();
+</script>
 </body>
 </html>
