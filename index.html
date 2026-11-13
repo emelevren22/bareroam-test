@@ -3068,7 +3068,7 @@ const brObs=new MutationObserver(records=>{
   else if(r.type==='characterData')brTranslateNode(r.target);
  }
 });
-brObs.observe(document.getElementById('app'),{childList:true,subtree:true,characterData:true});
+// Disabled global mutation observer to prevent UI lockups.
 brTranslateAll(selector.value);
 })();
 </script>
@@ -3203,7 +3203,7 @@ document.getElementById('br-language')?.addEventListener('change',update);
  function translate(root){if(!root)return;const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=walk.nextNode())translateText(n);}
  let busy=false;function refresh(){if(busy)return;busy=true;try{translate($('v7Overlay'));translate($('tripDetails'));translate($('planTitle'));translate($('planSubtitle'));translate($('itinerary'));translate($('v7Results'));syncRental();syncPlanNotice()}finally{busy=false}}
  const mo=new MutationObserver(()=>{if(!busy)queueMicrotask(refresh)});
- ['v7Overlay','tripDetails','planTitle','planSubtitle','itinerary'].forEach(id=>{const el=$(id);if(el)mo.observe(el,{childList:true,subtree:true,characterData:true})});
+ // Disabled nested observer to prevent UI lockups.
  $('br-language')?.addEventListener('change',()=>setTimeout(refresh,40));
  // Short-term rentals are not reliably indexed as Airbnb listings in OpenStreetMap. Offer an honest external search instead.
  const rental=document.createElement('a');rental.id='br-rental-search';rental.target='_blank';rental.rel='noopener noreferrer';
