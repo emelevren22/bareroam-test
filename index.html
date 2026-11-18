@@ -485,11 +485,11 @@ Good value for the location. Small room, very clean, and quiet after midnight.</
       <div id="shortlistResults" class="places-grid"></div>
     </section>
     <div class="bottom-grid" id="sources">
-      <section class="panel"><div class="eyebrow">04 / Know the source</div><h2 style="font-size:26px;margin-bottom:8px">Trust should be visible.</h2><p class="sub">Live map records are sourced from OpenStreetMap when available. Sample itineraries are demonstrations; booking prices and availability are not connected.</p><div class="source-row"><div><strong>OpenStreetMap</strong><br><span>Live source for mapped places (coverage varies)</span></div><a class="small-link" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Explore ↗</a></div><div class="source-row"><div><strong>Amadeus for Developers</strong><br><span>Test environment for flight API evaluation</span></div><a class="small-link" href="https://developers.amadeus.com/" target="_blank" rel="noopener">Docs ↗</a></div><div class="source-row"><div><strong>Google Places</strong><br><span>Potential paid/billing-enabled integration</span></div><a class="small-link" href="https://developers.google.com/maps/documentation/places/web-service/overview" target="_blank" rel="noopener">Docs ↗</a></div><div class="source-row"><div><strong>Booking.com Demand API</strong><br><span>Partner access required</span></div><a class="small-link" href="https://developers.booking.com/" target="_blank" rel="noopener">Docs ↗</a></div></section>
-      <section class="panel"><div class="eyebrow">05 / The promise</div><h2 style="font-size:26px;margin-bottom:8px">Fewer tabs. Better choices.</h2><p class="sub">Bareroam helps you understand the why behind a recommendation — and show the uncertainty when data is missing.</p><div class="source-row"><strong>Personal fit</strong><span>Built around your preferences</span></div><div class="source-row"><strong>Review themes</strong><span>Patterns, not cherry-picked quotes</span></div><div class="source-row"><strong>Transparent comparisons</strong><span>Trade-offs and source status</span></div><div class="source-row"><strong>No made-up live prices</strong><span>Clear labels for every data type</span></div><button class="secondary full" id="feedbackBtn">Give prototype feedback</button></section>
+      <section class="panel"><div class="eyebrow">04 / HOW BAREROAM WORKS</div><h2 style="font-size:26px;margin-bottom:8px">Thoughtful travel. Clear information.</h2><p class="sub">Explore mapped places, build a trip shortlist and ask travel questions in one place. Place data comes from OpenStreetMap when available; coverage varies.</p><div class="source-row"><strong>Real mapped places</strong><span>OpenStreetMap data where available</span></div><div class="source-row"><strong>Helpful trip ideas</strong><span>Suggestions, not confirmed bookings</span></div><div class="source-row"><strong>Clear limitations</strong><span>Prices, opening hours and availability are not verified live</span></div></section>
+      <section class="panel"><div class="eyebrow">05 / OUR PROMISE</div><h2 style="font-size:26px;margin-bottom:8px">Fewer tabs. Better choices.</h2><p class="sub">A simpler way to explore destinations, compare possibilities and shape a trip around what matters to you.</p><div class="source-row"><strong>Explore your way</strong><span>Travel interests, families and pets</span></div><div class="source-row"><strong>Keep what matters</strong><span>Save places to your shortlist</span></div><div class="source-row"><strong>Know what's verified</strong><span>No invented live booking prices</span></div><button class="secondary full" id="feedbackBtn">Share your feedback</button></section>
     </div>
   </main>
-  <footer><div><strong>bareroam</strong> · Early-access travel planning prototype.</div><div>Not a booking service. Demonstration itinerary and scores are not live offers or verified recommendations.</div></footer>
+  <footer><div><strong>bareroam</strong> · Your all-in-one travel companion.</div><div>Travel ideas are informational. Prices, availability and opening hours are not verified live.</div></footer>
 </div>
 
 <div id="v7Overlay" class="v7-overlay" aria-hidden="true"><section class="v7-dialog" role="dialog" aria-modal="true" aria-labelledby="v7Title">
@@ -3973,5 +3973,52 @@ body.br-screen-active .nav a.br-nav-current{color:#174f46!important;background:#
 #br-chat-input{font-size:14px}
 @media(max-width:550px){#br-chat-welcome{max-height:285px!important}}
 </style>
+
+<!-- V21: contained brand + persistent question discovery; assistant endpoint unchanged -->
+<style id="br-v21-polish">
+#app > header.topbar{height:112px!important;min-height:112px!important;box-sizing:border-box;overflow:visible;align-items:center!important}
+#app > header.topbar .brand-link{display:flex!important;align-items:center!important;align-self:center!important;flex:0 0 auto!important;max-width:190px!important;height:100%!important;position:relative!important;z-index:1}
+#app > header.topbar .bareroam-brand-stack{display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:2px!important;height:auto!important;max-height:106px!important;position:static!important;transform:none!important}
+#app > header.topbar .brand-link img.bareroam-original-symbol{width:48px!important;height:52px!important;max-height:52px!important;max-width:48px!important;object-fit:contain!important;flex-shrink:0!important}
+#app > header.topbar .bareroam-wordmark{font-size:28px!important;line-height:1.08!important;white-space:nowrap!important}
+#app .bareroam-category-nav{position:relative;z-index:0;margin-top:12px!important}
+@media(max-width:650px){#app > header.topbar{height:94px!important;min-height:94px!important;padding:0 12px!important}#app > header.topbar .brand-link{max-width:120px!important}#app > header.topbar .brand-link img.bareroam-original-symbol{width:35px!important;height:38px!important;max-height:38px!important}#app > header.topbar .bareroam-wordmark{font-size:21px!important}#app .bareroam-category-nav{margin-top:12px!important}}
+#br-chat-more{flex:0 0 auto;padding:9px 13px 10px;background:#fffefa;border-top:1px solid #e1e9e1;display:none}
+#br-chat-more.br-visible{display:block}
+#br-chat-more-toggle{border:1px solid #bfd2c6;border-radius:11px;background:#edf4ed;color:#174f46;width:100%;padding:10px 12px;font-weight:750;font-size:13px;text-align:left;cursor:pointer}
+#br-chat-more-content{display:none;max-height:190px;overflow:auto;padding-top:9px}
+#br-chat-more.br-expanded #br-chat-more-content{display:block}
+#br-chat-more-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:8px}
+#br-chat-more-groups button,#br-chat-more-questions button{border:1px solid #cbdccf;background:#f8fbf7;color:#174f46;border-radius:9px;padding:8px 9px;cursor:pointer;font-size:12px;text-align:left;line-height:1.35}
+#br-chat-more-groups button[aria-pressed=true]{background:#e3f0e7;border-color:#649b80;font-weight:750}
+#br-chat-more-questions{display:grid;gap:6px}
+#br-chat-more-questions button{width:100%}
+#br-chat-panel #br-chat-note{font-size:10px}
+</style>
+<script id="br-v21-prompts">
+(()=>{
+const panel=document.getElementById('br-chat-panel'),feed=document.getElementById('br-chat-feed'),form=document.getElementById('br-chat-form'),input=document.getElementById('br-chat-input');
+if(!panel||!feed||!form||!input)return;
+const more=document.createElement('div');more.id='br-chat-more';
+more.innerHTML='<button type="button" id="br-chat-more-toggle" aria-expanded="false">✦ Explore more questions ▾</button><div id="br-chat-more-content"><div id="br-chat-more-groups"></div><div id="br-chat-more-questions"></div></div>';
+form.parentNode.insertBefore(more,form);
+const toggle=more.querySelector('#br-chat-more-toggle'),groups=more.querySelector('#br-chat-more-groups'),questions=more.querySelector('#br-chat-more-questions');
+const lang=()=>document.getElementById('br-language')?.value==='tr';
+const names=[['🌍 Explore','🌍 Keşfet'],['✈️ Plan a trip','✈️ Seyahat planla'],['🐾 Family & pets','🐾 Aile ve evcil hayvan'],['📍 Local tips','📍 Yerel öneriler']];
+const base=[
+[['Why should I visit Zurich?','Zürih’i neden ziyaret etmeliyim?'],['What should I see in Zurich?','Zürih’te neleri görmeliyim?'],['What can I do on a budget?','Bütçe dostu neler yapabilirim?']],
+[['Plan a romantic weekend in Paris.','Paris’te romantik bir hafta sonu planla.'],['What should I pack for Iceland in December?','Aralıkta İzlanda için ne almalıyım?'],['Compare Prague and Budapest for a weekend.','Hafta sonu için Prag ve Budapeşte’yi karşılaştır.']],
+[['Is Rome suitable for families with children?','Roma çocuklu aileler için uygun mu?'],['Can I travel to Italy with my dog?','Köpeğimle İtalya’ya seyahat edebilir miyim?'],['Suggest a family-friendly city break.','Aile dostu kısa bir şehir gezisi öner.']],
+[['Where should I stay in Barcelona?','Barselona’da nerede kalmalıyım?'],['What should I eat in Istanbul?','İstanbul’da ne yemeliyim?'],['What can I do in Paris on a rainy day?','Paris’te yağmurlu günde ne yapabilirim?']]
+];
+let selected=0;
+function city(){return (document.getElementById('destination')?.value||document.getElementById('explorerDestination')?.value||'').trim()}
+function render(){const tr=lang();toggle.textContent=tr?'✦ Daha fazla soru keşfet '+(more.classList.contains('br-expanded')?'▴':'▾'):'✦ Explore more questions '+(more.classList.contains('br-expanded')?'▴':'▾');groups.replaceChildren();questions.replaceChildren();names.forEach((pair,i)=>{const b=document.createElement('button');b.type='button';b.textContent=pair[tr?1:0];b.setAttribute('aria-pressed',String(i===selected));b.addEventListener('click',()=>{selected=i;render()});groups.append(b)});let qs=base[selected];const c=city();if(selected===0&&c){qs=tr?[[`${c} şehrini neden ziyaret etmeliyim?`],[`${c} şehrinde neleri görmeliyim?`],[`${c} için 2 günlük plan yap.`]]:[[ `Why should I visit ${c}?`],[`What should I see in ${c}?`],[`Plan 2 days in ${c}.`]]}qs.forEach(pair=>{const b=document.createElement('button');b.type='button';b.textContent=pair[tr?1:0]||pair[0];b.addEventListener('click',()=>{input.value=b.textContent;more.classList.remove('br-expanded');toggle.setAttribute('aria-expanded','false');render();form.requestSubmit()});questions.append(b)})}
+toggle.addEventListener('click',()=>{more.classList.toggle('br-expanded');toggle.setAttribute('aria-expanded',String(more.classList.contains('br-expanded')));render()});
+const update=()=>{const has=feed.children.length>0;more.classList.toggle('br-visible',has);if(!has){more.classList.remove('br-expanded');toggle.setAttribute('aria-expanded','false')}};
+new MutationObserver(update).observe(feed,{childList:true});
+render();update();
+})();
+</script>
 </body>
 </html>
